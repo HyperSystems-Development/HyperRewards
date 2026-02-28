@@ -1,4 +1,6 @@
 {
+  "configVersion": 2,
+
   "_comment_database": "--- Database Settings --- | Type: 'sqlite' or 'mysql'.",
   "database": {
     "type": "sqlite",
@@ -42,7 +44,21 @@
     "reloadFailed": "&cFailed to reload config. Check console.",
     "errorInvalidPeriod": "&cInvalid period. Use: %valid_periods%",
     "errorConsole": "&cPlayers only.",
-    "noPermission": "&cYou do not have permission to use this command."
+    "noPermission": "&cYou do not have permission to use this command.",
+    "rewardAdded": "&aReward '%id%' added successfully!",
+    "rewardRemoved": "&aReward '%id%' removed successfully!",
+    "rewardNotFound": "&cReward '%id%' not found.",
+    "rewardBroadcast": "&6%player% &ehas played for &6%time% &eand claimed the &6%reward% &ereward!",
+    "rewardListHeader": "&6--- Server Rewards ---",
+    "rewardListEntry": "&e%id% &7(%period%): &f%status%",
+    "statusClaimed": "&a[CLAIMED]",
+    "statusAvailable": "&e[AVAILABLE]",
+    "statusLocked": "&c[LOCKED]",
+    "milestoneAnnouncement": "&6%player% &ehas reached the &6%milestone% &emilestone! (&6%time%&e played)",
+    "milestonePrivate": "&a[Milestone] &7Congratulations! You reached the &e%milestone% &7milestone!",
+    "permissionGranted": "&a[Playtime] &7You've been granted permission: &e%permission%",
+    "groupAssigned": "&a[Playtime] &7You've been added to the &e%group% &7group!",
+    "restReminderMsg": "&e[Playtime] &7You've been playing for &e%session_time%&7. Consider taking a break!"
   },
 
   "_comment_gui": "--- GUI Settings --- | Customize the text inside the leaderboard menu.",
@@ -55,5 +71,46 @@
     "footerTitle": "YOUR STATS:",
     "rankPrefix": "Rank: #",
     "timePrefix": "Time: "
+  },
+
+  "_comment_milestones": "--- Milestones --- | Playtime thresholds that trigger actions (permissions, announcements, commands).",
+  "milestones": {
+    "enabled": true,
+    "list": [
+      {
+        "id": "1h_newcomer",
+        "timeRequirement": 3600000,
+        "period": "all",
+        "grantPermissions": [],
+        "addToGroup": null,
+        "broadcastMessage": "&6%player% &ehas played for &61 hour&e! Welcome to the community!",
+        "privateMessage": "&a[Milestone] &7You've played for 1 hour! Welcome!",
+        "commands": [],
+        "repeatable": false
+      },
+      {
+        "id": "10h_veteran",
+        "timeRequirement": 36000000,
+        "period": "all",
+        "grantPermissions": [],
+        "addToGroup": null,
+        "broadcastMessage": "&6%player% &ehas reached &610 hours &eof playtime! A true veteran!",
+        "privateMessage": "&a[Milestone] &7You've played for 10 hours! You're a veteran!",
+        "commands": [],
+        "repeatable": false
+      }
+    ]
+  },
+
+  "_comment_restReminder": "--- Rest Reminders --- | Periodic messages suggesting players take a break.",
+  "restReminder": {
+    "enabled": true,
+    "intervalMs": 7200000,
+    "message": "&e[Playtime] &7You've been playing for &e%session_time%&7. Consider taking a break!"
+  },
+
+  "_comment_integrations": "--- Integrations --- | Control soft-dependency integrations.",
+  "integrations": {
+    "hyperPermsEnabled": true
   }
 }

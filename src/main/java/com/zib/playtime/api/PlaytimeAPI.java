@@ -1,15 +1,20 @@
 package com.zib.playtime.api;
 
+import com.zib.playtime.BuildInfo;
 import com.zib.playtime.Playtime;
 import com.zib.playtime.PlaytimeService;
+import com.zib.playtime.config.Milestone;
+import com.zib.playtime.listeners.SessionListener;
 
+import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
 public class PlaytimeAPI {
 
-    private static PlaytimeAPI instance;
+    private static volatile PlaytimeAPI instance;
     private final PlaytimeService service;
 
     private PlaytimeAPI() {
@@ -68,9 +73,45 @@ public class PlaytimeAPI {
     }
 
     /**
+     * Get the current live session duration for an online player.
+     * @param uuid The UUID of the player.
+     * @return Current session time in ms, or 0 if not online.
+     */
+    public long getCurrentSessionTime(UUID uuid) {
+        return SessionListener.getCurrentSession(uuid);
+    }
+
+    /**
+     * Get the list of configured milestones.
+     * @return Unmodifiable list of milestones.
+     */
+    public List<Milestone> getMilestones() {
+        return Collections.unmodifiableList(
+                Playtime.get().getConfigManager().getConfig().milestones.list
+        );
+    }
+
+    /**
+     * Check if a player has claimed a specific milestone.
+     * @param uuid The UUID of the player.
+     * @param milestoneId The milestone ID.
+     * @return true if the milestone has been claimed.
+     */
+    public boolean hasMilestoneClaimed(UUID uuid, String milestoneId) {
+        return Playtime.get().getDatabaseManager().hasMilestoneClaimed(uuid.toString(), milestoneId);
+    }
+
+    /**
+     * Get the plugin version.
+     * @return Version string from BuildInfo.
+     */
+    public String getVersion() {
+        return BuildInfo.VERSION;
+    }
+
+    /**
      * Utility: Format milliseconds into a readable string (e.g. "2h 5m").
-     * Useful for consistency across plugins.
-     * * @param millis Time in milliseconds.
+     * @param millis Time in milliseconds.
      * @return Formatted string.
      */
     public String formatTime(long millis) {

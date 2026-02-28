@@ -1,18 +1,20 @@
 {
   "Group": "Playtime",
   "Name": "Playtime",
-  "Version": "1.3.0",
-  "Description": "Advanced playtime tracking with leaderboards, database support, and live stats.",
+  "Version": "${version}",
+  "Description": "Advanced playtime tracking with leaderboards, milestones, database support, and live stats.",
   "Authors": [
     {
       "Name": "Zib"
     }
   ],
-  "Website": "https://github.com/263ms/hytale-plugin-template",
+  "Website": "https://github.com/HyperSystemsDev/AdvancedPlaytime",
   "Main": "com.zib.playtime.Playtime",
-  "ServerVersion": "*",
+  "ServerVersion": "${serverVersion}",
   "Dependencies": {},
-  "OptionalDependencies": {},
+  "OptionalDependencies": {
+    "com.hyperperms:HyperPerms": "*"
+  },
   "DisabledByDefault": false,
   "IncludesAssetPack": true
 }

@@ -6,12 +6,16 @@ import java.util.List;
 
 public class PlaytimeConfig {
 
+    public int configVersion = 2;
     public DatabaseSettings database = new DatabaseSettings();
     public CommandSettings command = new CommandSettings();
     public PeriodSettings periods = new PeriodSettings();
     public MessageSettings messages = new MessageSettings();
     public GuiSettings gui = new GuiSettings();
     public List<Reward> rewards = new ArrayList<>();
+    public MilestoneSettings milestones = new MilestoneSettings();
+    public RestReminderSettings restReminder = new RestReminderSettings();
+    public IntegrationSettings integrations = new IntegrationSettings();
 
     public void setDefaults() {
         if (database == null) database = new DatabaseSettings();
@@ -20,6 +24,10 @@ public class PlaytimeConfig {
         if (messages == null) messages = new MessageSettings();
         if (gui == null) gui = new GuiSettings();
         if (rewards == null) rewards = new ArrayList<>();
+        if (milestones == null) milestones = new MilestoneSettings();
+        if (milestones.list == null) milestones.list = new ArrayList<>();
+        if (restReminder == null) restReminder = new RestReminderSettings();
+        if (integrations == null) integrations = new IntegrationSettings();
 
         if (command.topStyle == null) command.topStyle = "text";
         if (command.aliases == null) command.aliases = Arrays.asList("pt", "play", "time");
@@ -71,12 +79,20 @@ public class PlaytimeConfig {
         public String rewardNotFound = "&cReward '%id%' not found.";
         public String rewardBroadcast = "&6%player% &ehas played for &6%time% &eand claimed the &6%reward% &ereward!";
 
-        // NEW: List Messages
         public String rewardListHeader = "&6--- Server Rewards ---";
         public String rewardListEntry = "&e%id% &7(%period%): &f%status%";
         public String statusClaimed = "&a[CLAIMED]";
         public String statusAvailable = "&e[AVAILABLE]";
         public String statusLocked = "&c[LOCKED]";
+
+        // Milestone messages
+        public String milestoneAnnouncement = "&6%player% &ehas reached the &6%milestone% &emilestone! (&6%time%&e played)";
+        public String milestonePrivate = "&a[Milestone] &7Congratulations! You reached the &e%milestone% &7milestone!";
+        public String permissionGranted = "&a[Playtime] &7You've been granted permission: &e%permission%";
+        public String groupAssigned = "&a[Playtime] &7You've been added to the &e%group% &7group!";
+
+        // Rest reminder
+        public String restReminderMsg = "&e[Playtime] &7You've been playing for &e%session_time%&7. Consider taking a break!";
     }
 
     public static class GuiSettings {
@@ -88,5 +104,20 @@ public class PlaytimeConfig {
         public String footerTitle = "YOUR STATS:";
         public String rankPrefix = "Rank: #";
         public String timePrefix = "Time: ";
+    }
+
+    public static class MilestoneSettings {
+        public boolean enabled = true;
+        public List<Milestone> list = new ArrayList<>();
+    }
+
+    public static class RestReminderSettings {
+        public boolean enabled = true;
+        public long intervalMs = 7200000; // 2 hours default
+        public String message = "&e[Playtime] &7You've been playing for &e%session_time%&7. Consider taking a break!";
+    }
+
+    public static class IntegrationSettings {
+        public boolean hyperPermsEnabled = true;
     }
 }

@@ -11,11 +11,14 @@ import com.hypixel.hytale.server.core.entity.entities.Player;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
 import com.hypixel.hytale.server.core.universe.world.World;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
+import com.zib.playtime.BuildInfo;
 import com.zib.playtime.Playtime;
 import com.zib.playtime.api.PlaytimeAPI;
+import com.zib.playtime.config.Milestone;
 import com.zib.playtime.config.PlaytimeConfig;
 import com.zib.playtime.config.Reward;
 import com.zib.playtime.gui.PlaytimeLeaderboardGui;
+import com.zib.playtime.integration.HyperPermsIntegration;
 
 import java.util.*;
 import java.util.concurrent.TimeUnit;
@@ -148,6 +151,14 @@ public class PlaytimeCommand extends AbstractPlayerCommand {
                 showHelp(ctx);
                 return;
             }
+            if (arg.equalsIgnoreCase("version")) {
+                showVersion(ctx);
+                return;
+            }
+            if (arg.equalsIgnoreCase("milestones")) {
+                showMilestones(ctx, player);
+                return;
+            }
             if (arg.equalsIgnoreCase("rewards")) {
                 listUserRewards(ctx, player, config);
                 return;
@@ -207,14 +218,57 @@ public class PlaytimeCommand extends AbstractPlayerCommand {
             ctx.sendMessage(color("&6--- Playtime Help ---"));
             ctx.sendMessage(color("&e/playtime &7- Check your playtime"));
             ctx.sendMessage(color("&e/playtime rewards &7- List your rewards"));
+            ctx.sendMessage(color("&e/playtime milestones &7- View milestones progress"));
             ctx.sendMessage(color("&e/playtime top [period] &7- Check leaderboard"));
+            ctx.sendMessage(color("&e/playtime version &7- Show plugin version info"));
             if (ctx.sender().hasPermission("playtime.admin")) {
                 ctx.sendMessage(color("&c--- Admin ---"));
                 ctx.sendMessage(color("&c/playtime admin &7- Show reward creation guide"));
                 ctx.sendMessage(color("&c/playtime admin listRewards &7- List configured rewards"));
+                ctx.sendMessage(color("&c/playtime admin listMilestones &7- List configured milestones"));
                 ctx.sendMessage(color("&c/playtime admin addReward &7- Add a new reward"));
                 ctx.sendMessage(color("&c/playtime admin removeReward <id> &7- Remove a reward"));
                 ctx.sendMessage(color("&c/playtime reload &7- Reload config"));
+            }
+        }
+
+        private void showVersion(CommandContext ctx) {
+            ctx.sendMessage(color("&6--- Playtime Info ---"));
+            ctx.sendMessage(color("&eVersion: &f" + BuildInfo.VERSION));
+            ctx.sendMessage(color("&eJava: &f" + BuildInfo.JAVA_VERSION));
+            ctx.sendMessage(color("&eHyperPerms: &f" + (HyperPermsIntegration.isAvailable() ? "Connected" : "Not available")));
+        }
+
+        private void showMilestones(CommandContext ctx, PlayerRef player) {
+            if (!ctx.sender().hasPermission("playtime.milestones")) {
+                ctx.sendMessage(color(Playtime.get().getConfigManager().getConfig().messages.noPermission));
+                return;
+            }
+
+            PlaytimeConfig config = Playtime.get().getConfigManager().getConfig();
+            if (!config.milestones.enabled || config.milestones.list.isEmpty()) {
+                ctx.sendMessage(color("&7No milestones configured."));
+                return;
+            }
+
+            ctx.sendMessage(color("&6--- Milestones ---"));
+            String uuid = player.getUuid().toString();
+
+            for (Milestone m : config.milestones.list) {
+                boolean claimed = Playtime.get().getDatabaseManager().hasMilestoneClaimed(uuid, m.id);
+                long playtime = PlaytimeAPI.get().getPlaytime(player.getUuid(), m.period);
+                boolean eligible = playtime >= m.timeRequirement;
+
+                String status;
+                if (claimed) {
+                    status = "&a[COMPLETED]";
+                } else if (eligible) {
+                    status = "&e[READY]";
+                } else {
+                    status = "&c[" + format(playtime) + " / " + format(m.timeRequirement) + "]";
+                }
+
+                ctx.sendMessage(color("&e" + m.id + " &7(" + m.period + "): " + status));
             }
         }
 
@@ -289,6 +343,28 @@ public class PlaytimeCommand extends AbstractPlayerCommand {
                     ctx.sendMessage(color("  &7Period: " + r.period));
                     ctx.sendMessage(color("  &7Time: " + format(r.timeRequirement)));
                     ctx.sendMessage(color("  &7Cmd: " + (r.commands.isEmpty() ? "None" : r.commands.get(0))));
+                }
+                return;
+            }
+
+            if (a1.equalsIgnoreCase("admin") && a2.equalsIgnoreCase("listMilestones")) {
+                if (!ctx.sender().hasPermission("playtime.admin")) {
+                    ctx.sendMessage(color("&cNo permission.")); return;
+                }
+                PlaytimeConfig cfg = Playtime.get().getConfigManager().getConfig();
+                ctx.sendMessage(color("&6--- Configured Milestones (Admin) ---"));
+                ctx.sendMessage(color("&7Milestones enabled: &f" + cfg.milestones.enabled));
+                if (cfg.milestones.list.isEmpty()) {
+                    ctx.sendMessage(color("&7No milestones configured."));
+                } else {
+                    for (Milestone m : cfg.milestones.list) {
+                        ctx.sendMessage(color("&eID: &f" + m.id));
+                        ctx.sendMessage(color("  &7Period: " + m.period));
+                        ctx.sendMessage(color("  &7Time: " + format(m.timeRequirement)));
+                        ctx.sendMessage(color("  &7Permissions: " + (m.grantPermissions == null || m.grantPermissions.isEmpty() ? "None" : String.join(", ", m.grantPermissions))));
+                        ctx.sendMessage(color("  &7Group: " + (m.addToGroup == null ? "None" : m.addToGroup)));
+                        ctx.sendMessage(color("  &7Repeatable: " + m.repeatable));
+                    }
                 }
                 return;
             }

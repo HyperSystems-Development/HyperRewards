@@ -9,12 +9,15 @@ import com.zib.playtime.config.ConfigManager;
 import com.zib.playtime.config.PlaytimeConfig;
 import com.zib.playtime.database.DatabaseManager;
 import com.zib.playtime.commands.PlaytimeCommand;
+import com.zib.playtime.integration.HyperPermsIntegration;
 import com.zib.playtime.listeners.SessionListener;
+import com.zib.playtime.milestones.MilestoneManager;
+import com.zib.playtime.milestones.RestReminderManager;
 import com.zib.playtime.rewards.RewardManager;
+import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.annotation.Nonnull;
 import java.io.File;
 import java.util.concurrent.TimeUnit;
 
@@ -26,9 +29,11 @@ public class Playtime extends JavaPlugin {
     private ConfigManager configManager;
     private DatabaseManager db;
     private PlaytimeService service;
-    private RewardManager rewardManager; // NEW
+    private RewardManager rewardManager;
+    private MilestoneManager milestoneManager;
+    private RestReminderManager restReminderManager;
 
-    public Playtime(@Nonnull JavaPluginInit init) {
+    public Playtime(@NotNull JavaPluginInit init) {
         super(init);
         INSTANCE = this;
     }
@@ -48,8 +53,15 @@ public class Playtime extends JavaPlugin {
         db.init();
         service = new PlaytimeService(db);
 
-        // NEW: Init Reward Manager
+        // Init HyperPerms integration (soft dependency - reflection based)
+        if (cfg.integrations.hyperPermsEnabled) {
+            HyperPermsIntegration.init();
+        }
+
+        // Init managers
         rewardManager = new RewardManager(db);
+        milestoneManager = new MilestoneManager(db);
+        restReminderManager = new RestReminderManager();
 
         String cmdName = cfg.command.name;
         String[] aliases = cfg.command.aliases.toArray(new String[0]);
@@ -58,16 +70,25 @@ public class Playtime extends JavaPlugin {
         this.getEventRegistry().registerGlobal(PlayerConnectEvent.class, SessionListener::onJoin);
         this.getEventRegistry().registerGlobal(PlayerDisconnectEvent.class, SessionListener::onQuit);
 
-        // NEW: Schedule Reward Checker (Runs every 1 minute)
+        // Schedule periodic tasks (rewards, milestones, rest reminders) - every 1 minute
         HytaleServer.SCHEDULED_EXECUTOR.scheduleAtFixedRate(() -> {
             try {
                 rewardManager.checkRewards();
+                if (cfg.milestones.enabled) {
+                    milestoneManager.checkMilestones();
+                }
+                if (cfg.restReminder.enabled) {
+                    restReminderManager.checkReminders();
+                }
             } catch (Exception e) {
-                logger.error("Error in reward checker task", e);
+                logger.error("Error in scheduled task", e);
             }
         }, 1, 1, TimeUnit.MINUTES);
 
-        logger.info("Playtime loaded successfully. Main command: /" + cmdName);
+        logger.info("Playtime v{} loaded. Command: /{}", BuildInfo.VERSION, cmdName);
+        if (HyperPermsIntegration.isAvailable()) {
+            logger.info("HyperPerms integration enabled");
+        }
     }
 
     @Override
@@ -79,4 +100,7 @@ public class Playtime extends JavaPlugin {
     public PlaytimeService getService() { return service; }
     public ConfigManager getConfigManager() { return configManager; }
     public RewardManager getRewardManager() { return rewardManager; }
+    public MilestoneManager getMilestoneManager() { return milestoneManager; }
+    public RestReminderManager getRestReminderManager() { return restReminderManager; }
+    public DatabaseManager getDatabaseManager() { return db; }
 }
