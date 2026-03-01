@@ -122,7 +122,36 @@ public class DatabaseManager {
     }
 
     public Connection getConnection() throws SQLException {
-        return dataSource.getConnection();
+        return getConnectionWithRetry(3);
+    }
+
+    private Connection getConnectionWithRetry(int maxAttempts) throws SQLException {
+        SQLException lastException = null;
+        for (int attempt = 1; attempt <= maxAttempts; attempt++) {
+            try {
+                return dataSource.getConnection();
+            } catch (SQLException e) {
+                lastException = e;
+                logger.warn("Database connection attempt {}/{} failed: {}", attempt, maxAttempts, e.getMessage());
+                if (attempt < maxAttempts) {
+                    try {
+                        Thread.sleep((long) Math.pow(2, attempt - 1) * 100);
+                    } catch (InterruptedException ie) {
+                        Thread.currentThread().interrupt();
+                        throw e;
+                    }
+                }
+            }
+        }
+        throw lastException;
+    }
+
+    public boolean isHealthy() {
+        try (Connection conn = dataSource.getConnection()) {
+            return conn.isValid(2);
+        } catch (SQLException e) {
+            return false;
+        }
     }
 
     public void close() {

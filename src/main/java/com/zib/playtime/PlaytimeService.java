@@ -10,6 +10,9 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.zib.playtime.database.DatabaseManager;
 import com.zib.playtime.listeners.SessionListener;
 
@@ -17,6 +20,7 @@ public class PlaytimeService {
 
     private final DatabaseManager db;
     private final boolean isMySQL;
+    private static final Logger logger = LoggerFactory.getLogger("Playtime-Service");
 
     public PlaytimeService(DatabaseManager db) {
         this.db = db;
@@ -34,7 +38,7 @@ public class PlaytimeService {
             ps.setLong(4, duration);
             ps.executeUpdate();
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.error("Failed to save session for {}", uuid, e);
         }
     }
 
@@ -52,11 +56,11 @@ public class PlaytimeService {
             ps.setString(1, uuid);
             ResultSet rs = ps.executeQuery();
             if (rs.next()) dbTime = rs.getLong(1);
-        } catch (SQLException e) { e.printStackTrace(); }
+        } catch (SQLException e) { logger.error("Failed to get playtime for {}", uuid, e); }
 
         try {
             dbTime += SessionListener.getCurrentSession(UUID.fromString(uuid));
-        } catch (Exception ignored) {}
+        } catch (Exception e) { logger.warn("Failed to get current session for {}", uuid, e); }
 
         return dbTime;
     }
@@ -102,7 +106,7 @@ public class PlaytimeService {
 
                 tempMap.put(name, total);
             }
-        } catch (SQLException e) { e.printStackTrace(); }
+        } catch (SQLException e) { logger.error("Failed to get top players for period {}", type, e); }
 
         return tempMap.entrySet().stream()
                 .sorted(Map.Entry.<String, Long>comparingByValue().reversed())
