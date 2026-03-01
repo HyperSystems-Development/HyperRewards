@@ -18,7 +18,8 @@
     "description": "Check your playtime stats",
     "aliases": [
       "pt",
-      "stat"
+      "play",
+      "time"
     ],
     "topStyle": "text"
   },
@@ -32,7 +33,7 @@
     "reload": "reload"
   },
 
-  "_comment_messages": "--- Messages --- | Use '&' for colors.",
+  "_comment_messages": "--- Messages --- | Use '&' for colors. Placeholders: %player%, %time%, %rank%, %period_name%, %id%, %status%, %reward%, %milestone%, %session_time%, %permission%, %group%",
   "messages": {
     "selfCheck": "&dTotal Playtime: &e%time%",
     "otherCheck": "&d%player%'s Playtime: &e%time%",
@@ -56,9 +57,9 @@
     "statusLocked": "&c[LOCKED]",
     "milestoneAnnouncement": "&6%player% &ehas reached the &6%milestone% &emilestone! (&6%time%&e played)",
     "milestonePrivate": "&a[Milestone] &7Congratulations! You reached the &e%milestone% &7milestone!",
-    "permissionGranted": "&a[Playtime] &7You've been granted permission: &e%permission%",
-    "groupAssigned": "&a[Playtime] &7You've been added to the &e%group% &7group!",
-    "restReminderMsg": "&e[Playtime] &7You've been playing for &e%session_time%&7. Consider taking a break!"
+    "permissionGranted": "&a[HyperRewards] &7You've been granted permission: &e%permission%",
+    "groupAssigned": "&a[HyperRewards] &7You've been added to the &e%group% &7group!",
+    "restReminderMsg": "&e[HyperRewards] &7You've been playing for &e%session_time%&7. Consider taking a break!"
   },
 
   "_comment_gui": "--- GUI Settings --- | Customize the text inside the leaderboard menu.",
@@ -73,43 +74,247 @@
     "timePrefix": "Time: "
   },
 
-  "_comment_milestones": "--- Milestones --- | Playtime thresholds that trigger actions (permissions, announcements, commands).",
+  "_comment_rewards": "--- Rewards --- | Automatic playtime rewards. Use %player% in commands. Time is in milliseconds (1h = 3600000, 1d = 86400000). Set 'repeatable' to true for recurring rewards. Set 'world' to restrict to a specific world, or null for all.",
+  "rewards": [
+    {
+      "id": "daily_supply_drop",
+      "period": "daily",
+      "timeRequirement": 900000,
+      "commands": [
+        "give %player% bread 8"
+      ],
+      "broadcastMessage": "&a%player% &7collected their &adaily supply drop&7!",
+      "repeatable": true,
+      "world": null
+    },
+    {
+      "id": "daily_combat_kit",
+      "period": "daily",
+      "timeRequirement": 3600000,
+      "commands": [
+        "give %player% iron_sword 1",
+        "give %player% iron_chestplate 1"
+      ],
+      "broadcastMessage": "&6%player% &eearned today's &6Combat Kit &efor 1 hour of play!",
+      "repeatable": true,
+      "world": null
+    },
+    {
+      "id": "daily_war_chest",
+      "period": "daily",
+      "timeRequirement": 10800000,
+      "commands": [
+        "give %player% diamond 3",
+        "give %player% golden_apple 2"
+      ],
+      "broadcastMessage": "&d%player% &7unlocked the &dDaily War Chest &7for 3 hours of play!",
+      "repeatable": true,
+      "world": null
+    },
+    {
+      "id": "weekly_bounty",
+      "period": "weekly",
+      "timeRequirement": 18000000,
+      "commands": [
+        "give %player% diamond 8",
+        "give %player% emerald 16"
+      ],
+      "broadcastMessage": "&b%player% &7claimed the &bWeekly Bounty &7for 5 hours this week!",
+      "repeatable": true,
+      "world": null
+    },
+    {
+      "id": "weekly_warlord_cache",
+      "period": "weekly",
+      "timeRequirement": 54000000,
+      "commands": [
+        "give %player% diamond_sword 1",
+        "give %player% diamond_chestplate 1",
+        "give %player% golden_apple 8"
+      ],
+      "broadcastMessage": "&d%player% &7earned the &dWarlord Cache &7for 15 hours this week!",
+      "repeatable": true,
+      "world": null
+    },
+    {
+      "id": "monthly_treasury",
+      "period": "monthly",
+      "timeRequirement": 86400000,
+      "commands": [
+        "give %player% diamond 32",
+        "give %player% emerald 64"
+      ],
+      "broadcastMessage": "&6%player% &eopened the &6Monthly Treasury &efor 24 hours this month!",
+      "repeatable": true,
+      "world": null
+    },
+    {
+      "id": "recruit_kit",
+      "period": "all",
+      "timeRequirement": 3600000,
+      "commands": [
+        "give %player% iron_sword 1",
+        "give %player% iron_helmet 1",
+        "give %player% bread 16"
+      ],
+      "broadcastMessage": "&a%player% &7has survived their first hour and earned a &aRecruit Kit&7!",
+      "repeatable": false,
+      "world": null
+    },
+    {
+      "id": "warrior_arsenal",
+      "period": "all",
+      "timeRequirement": 36000000,
+      "commands": [
+        "give %player% diamond_sword 1",
+        "give %player% diamond_chestplate 1",
+        "give %player% golden_apple 8"
+      ],
+      "broadcastMessage": "&6%player% &ehas reached &610 hours &eand earned the &6Warrior Arsenal&e!",
+      "repeatable": false,
+      "world": null
+    },
+    {
+      "id": "commanders_gear",
+      "period": "all",
+      "timeRequirement": 180000000,
+      "commands": [
+        "give %player% diamond_sword 1",
+        "give %player% diamond_chestplate 1",
+        "give %player% diamond_leggings 1",
+        "give %player% diamond_boots 1",
+        "give %player% golden_apple 16"
+      ],
+      "broadcastMessage": "&d%player% &7has reached &d50 hours&7 and received the &dCommander's Gear&7!",
+      "repeatable": false,
+      "world": null
+    },
+    {
+      "id": "legendary_spoils",
+      "period": "all",
+      "timeRequirement": 360000000,
+      "commands": [
+        "give %player% diamond 64",
+        "give %player% emerald 64",
+        "give %player% golden_apple 32"
+      ],
+      "broadcastMessage": "&4%player% &chas reached &4100 HOURS &cand claimed the &4&lLegendary Spoils&c!",
+      "repeatable": false,
+      "world": null
+    }
+  ],
+
+  "_comment_milestones": "--- Milestones --- | Progression goals with rich actions. Can grant permissions, add to groups, run commands, and send messages. Great for rank-ups and achievements. Use 'repeatable: true' with daily/weekly/monthly periods for recurring goals.",
   "milestones": {
     "enabled": true,
     "list": [
       {
-        "id": "1h_newcomer",
-        "timeRequirement": 3600000,
+        "id": "recruit",
+        "timeRequirement": 1800000,
         "period": "all",
-        "grantPermissions": [],
-        "addToGroup": null,
-        "broadcastMessage": "&6%player% &ehas played for &61 hour&e! Welcome to the community!",
-        "privateMessage": "&a[Milestone] &7You've played for 1 hour! Welcome!",
+        "grantPermissions": [
+          "server.chat.color",
+          "server.msg"
+        ],
+        "addToGroup": "recruit",
+        "broadcastMessage": "&a%player% &7has completed training and is now a &aRecruit&7! (&a30 minutes &7played)",
+        "privateMessage": "&a[Rank Up] &7You've been promoted to &aRecruit&7! You can now use chat colors and private messages.",
         "commands": [],
         "repeatable": false
       },
       {
-        "id": "10h_veteran",
-        "timeRequirement": 36000000,
+        "id": "soldier",
+        "timeRequirement": 7200000,
         "period": "all",
-        "grantPermissions": [],
-        "addToGroup": null,
-        "broadcastMessage": "&6%player% &ehas reached &610 hours &eof playtime! A true veteran!",
-        "privateMessage": "&a[Milestone] &7You've played for 10 hours! You're a veteran!",
+        "grantPermissions": [
+          "server.home.set",
+          "server.tpa",
+          "server.kit.soldier"
+        ],
+        "addToGroup": "soldier",
+        "broadcastMessage": "&e%player% &7has been promoted to &eSoldier&7! (&e2 hours &7played)",
+        "privateMessage": "&a[Rank Up] &7You've been promoted to &eSoldier&7! You can now set a home, use /tpa, and access the soldier kit.",
         "commands": [],
         "repeatable": false
+      },
+      {
+        "id": "warrior",
+        "timeRequirement": 36000000,
+        "period": "all",
+        "grantPermissions": [
+          "server.home.multiple",
+          "server.kit.warrior",
+          "server.auction.sell"
+        ],
+        "addToGroup": "warrior",
+        "broadcastMessage": "&6%player% &7has proven themselves as a &6Warrior&7! (&610 hours &7played)",
+        "privateMessage": "&a[Rank Up] &7You've been promoted to &6Warrior&7! Multiple homes, warrior kit, and auction access unlocked.",
+        "commands": [],
+        "repeatable": false
+      },
+      {
+        "id": "commander",
+        "timeRequirement": 180000000,
+        "period": "all",
+        "grantPermissions": [
+          "server.nickname",
+          "server.kit.commander",
+          "server.auction.create"
+        ],
+        "addToGroup": "commander",
+        "broadcastMessage": "&d%player% &7has risen to &dCommander&7! (&d50 hours &7played)",
+        "privateMessage": "&a[Rank Up] &7You've been promoted to &dCommander&7! Nicknames, commander kit, and auction creation unlocked.",
+        "commands": [],
+        "repeatable": false
+      },
+      {
+        "id": "warlord",
+        "timeRequirement": 360000000,
+        "period": "all",
+        "grantPermissions": [
+          "server.chat.hex",
+          "server.kit.warlord",
+          "server.title.select"
+        ],
+        "addToGroup": "warlord",
+        "broadcastMessage": "&4%player% &7has achieved &4&lWarlord &7status! (&4100 hours &7played)",
+        "privateMessage": "&a[Rank Up] &7You've achieved &4&lWarlord&7 status! Hex colors, warlord kit, and custom titles unlocked.",
+        "commands": [],
+        "repeatable": false
+      },
+      {
+        "id": "weekly_warrior",
+        "timeRequirement": 18000000,
+        "period": "weekly",
+        "grantPermissions": [],
+        "addToGroup": null,
+        "broadcastMessage": "&b%player% &7earned &bWeekly Warrior &7this week! (&b5 hours&7)",
+        "privateMessage": "&a[Milestone] &7You've earned &bWeekly Warrior&7 for 5 hours of combat this week!",
+        "commands": [],
+        "repeatable": true
+      },
+      {
+        "id": "daily_grinder",
+        "timeRequirement": 10800000,
+        "period": "daily",
+        "grantPermissions": [],
+        "addToGroup": null,
+        "broadcastMessage": null,
+        "privateMessage": "&a[Milestone] &7You've played 3 hours today! Keep grinding, soldier!",
+        "commands": [],
+        "repeatable": true
       }
     ]
   },
 
-  "_comment_restReminder": "--- Rest Reminders --- | Periodic messages suggesting players take a break.",
+  "_comment_restReminder": "--- Rest Reminders --- | Periodic messages suggesting players take a break. intervalMs is in milliseconds (2h = 7200000).",
   "restReminder": {
     "enabled": true,
     "intervalMs": 7200000,
-    "message": "&e[Playtime] &7You've been playing for &e%session_time%&7. Consider taking a break!"
+    "message": "&e[HyperRewards] &7You've been playing for &e%session_time%&7. Consider taking a break!"
   },
 
-  "_comment_integrations": "--- Integrations --- | Control soft-dependency integrations.",
+  "_comment_integrations": "--- Integrations --- | Control soft-dependency integrations. HyperPerms is required for milestone permission granting and group assignments.",
   "integrations": {
     "hyperPermsEnabled": true
   }
