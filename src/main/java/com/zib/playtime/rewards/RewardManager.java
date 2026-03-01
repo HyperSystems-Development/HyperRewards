@@ -7,6 +7,7 @@ import com.zib.playtime.api.PlaytimeAPI;
 import com.zib.playtime.config.PlaytimeConfig;
 import com.zib.playtime.config.Reward;
 import com.zib.playtime.database.DatabaseManager;
+import com.hypixel.hytale.server.core.universe.world.World;
 import com.zib.playtime.util.ColorUtil;
 import com.zib.playtime.util.CommandUtil;
 import org.slf4j.Logger;
@@ -14,6 +15,7 @@ import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 public class RewardManager {
 
@@ -38,6 +40,15 @@ public class RewardManager {
         String uuid = player.getUuid().toString();
 
         for (Reward reward : config.rewards) {
+            // Per-world filter: skip if reward is world-specific and player isn't in that world
+            if (reward.world != null && !reward.world.isEmpty()) {
+                UUID worldUuid = player.getWorldUuid();
+                if (worldUuid == null) continue;
+                World playerWorld = Universe.get().getWorld(worldUuid);
+                if (playerWorld == null) continue;
+                if (!reward.world.equalsIgnoreCase(playerWorld.getName())) continue;
+            }
+
             long playTime = PlaytimeAPI.get().getPlaytime(player.getUuid(), reward.period);
 
             if (playTime >= reward.timeRequirement) {
