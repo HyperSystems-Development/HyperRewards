@@ -12,7 +12,7 @@ import java.nio.file.Files;
 public class ConfigManager {
 
     private final File configFile;
-    private PlaytimeConfig config;
+    private volatile PlaytimeConfig config;
     private final Gson gson;
     private final Logger logger = LoggerFactory.getLogger("Playtime-Config");
 
