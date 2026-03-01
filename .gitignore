@@ -50,6 +50,9 @@ desktop.ini
 # Logs
 *.log
 
+# Plans / docs
+docs/plans/
+
 # Temporary files
 *.tmp
 *.bak
