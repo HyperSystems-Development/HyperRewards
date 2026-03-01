@@ -1,24 +1,20 @@
 package com.zib.playtime.milestones;
 
-import com.hypixel.hytale.server.core.Message;
-import com.hypixel.hytale.server.core.command.system.CommandManager;
-import com.hypixel.hytale.server.core.command.system.CommandSender;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
 import com.hypixel.hytale.server.core.universe.Universe;
-import com.hypixel.hytale.server.core.universe.world.World;
 import com.zib.playtime.Playtime;
 import com.zib.playtime.api.PlaytimeAPI;
 import com.zib.playtime.config.Milestone;
 import com.zib.playtime.config.PlaytimeConfig;
 import com.zib.playtime.database.DatabaseManager;
 import com.zib.playtime.integration.HyperPermsIntegration;
+import com.zib.playtime.util.ColorUtil;
+import com.zib.playtime.util.CommandUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
-import java.util.concurrent.TimeUnit;
 
 public class MilestoneManager {
 
@@ -87,7 +83,7 @@ public class MilestoneManager {
 
         // 4. Execute console commands
         if (milestone.commands != null && !milestone.commands.isEmpty()) {
-            executeCommands(player, milestone);
+            CommandUtil.executeAsConsole(player, milestone.commands, logger);
         }
 
         // 5. Send private message
@@ -96,7 +92,7 @@ public class MilestoneManager {
                     .replace("%player%", username)
                     .replace("%time%", timeFormatted)
                     .replace("%milestone%", milestone.id);
-            Universe.get().sendMessage(player.getUuid(), color(msg));
+            Universe.get().sendMessage(player.getUuid(), ColorUtil.color(msg));
         }
 
         // 6. Broadcast announcement
@@ -105,72 +101,8 @@ public class MilestoneManager {
                     .replace("%player%", username)
                     .replace("%time%", timeFormatted)
                     .replace("%milestone%", milestone.id);
-            Universe.get().sendMessage(color(msg));
+            Universe.get().sendMessage(ColorUtil.color(msg));
         }
     }
 
-    @SuppressWarnings("deprecation")
-    private void executeCommands(PlayerRef player, Milestone milestone) {
-        World world = Universe.get().getWorld(player.getWorldUuid());
-        if (world == null) {
-            world = Universe.get().getDefaultWorld();
-        }
-
-        if (world != null) {
-            final String username = player.getUsername();
-            world.execute(() -> {
-                CommandManager cm = CommandManager.get();
-                CommandSender consoleSender = new CommandSender() {
-                    @Override public String getDisplayName() { return "Console"; }
-                    @Override public UUID getUuid() { return new UUID(0, 0); }
-                    @Override public void sendMessage(Message message) { logger.info("[ConsoleOutput]: {}", message); }
-                    @Override public boolean hasPermission(String p) { return true; }
-                    @Override public boolean hasPermission(String p, boolean d) { return true; }
-                };
-
-                for (String cmd : milestone.commands) {
-                    String parsedCmd = cmd.replace("%player%", username).trim();
-                    if (parsedCmd.startsWith("/")) parsedCmd = parsedCmd.substring(1);
-                    if (parsedCmd.startsWith("\"") && parsedCmd.endsWith("\"")) {
-                        parsedCmd = parsedCmd.substring(1, parsedCmd.length() - 1);
-                    }
-
-                    try {
-                        cm.handleCommand(consoleSender, parsedCmd);
-                    } catch (Exception e) {
-                        logger.error("Failed to execute milestone command: {}", parsedCmd, e);
-                    }
-                }
-            });
-        }
-    }
-
-    private Message color(String text) {
-        if (!text.contains("&")) return Message.raw(text);
-        List<Message> messageParts = new ArrayList<>();
-        String[] parts = text.split("(?=&[0-9a-fk-or])");
-        for (String part : parts) {
-            if (part.length() < 2 || part.charAt(0) != '&') {
-                messageParts.add(Message.raw(part));
-                continue;
-            }
-            char code = part.charAt(1);
-            String content = part.substring(2);
-            String hex = getHexFromCode(code);
-            if (hex != null) messageParts.add(Message.raw(content).color(hex));
-            else messageParts.add(Message.raw(content));
-        }
-        return Message.join(messageParts.toArray(new Message[0]));
-    }
-
-    private String getHexFromCode(char code) {
-        return switch (code) {
-            case '0' -> "#000000"; case '1' -> "#0000AA"; case '2' -> "#00AA00";
-            case '3' -> "#00AAAA"; case '4' -> "#AA0000"; case '5' -> "#AA00AA";
-            case '6' -> "#FFAA00"; case '7' -> "#AAAAAA"; case '8' -> "#555555";
-            case '9' -> "#5555FF"; case 'a' -> "#55FF55"; case 'b' -> "#55FFFF";
-            case 'c' -> "#FF5555"; case 'd' -> "#FF55FF"; case 'e' -> "#FFFF55";
-            case 'f' -> "#FFFFFF"; default -> null;
-        };
-    }
 }

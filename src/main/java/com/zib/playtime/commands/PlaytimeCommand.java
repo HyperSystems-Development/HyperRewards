@@ -2,7 +2,6 @@ package com.zib.playtime.commands;
 
 import com.hypixel.hytale.component.Ref;
 import com.hypixel.hytale.component.Store;
-import com.hypixel.hytale.server.core.Message;
 import com.hypixel.hytale.server.core.command.system.CommandContext;
 import com.hypixel.hytale.server.core.command.system.arguments.system.RequiredArg;
 import com.hypixel.hytale.server.core.command.system.arguments.types.ArgTypes;
@@ -19,9 +18,10 @@ import com.zib.playtime.config.PlaytimeConfig;
 import com.zib.playtime.config.Reward;
 import com.zib.playtime.gui.PlaytimeLeaderboardGui;
 import com.zib.playtime.integration.HyperPermsIntegration;
+import com.zib.playtime.util.ColorUtil;
+import com.zib.playtime.util.TimeUtil;
 
 import java.util.*;
-import java.util.concurrent.TimeUnit;
 
 public class PlaytimeCommand extends AbstractPlayerCommand {
 
@@ -45,55 +45,20 @@ public class PlaytimeCommand extends AbstractPlayerCommand {
     protected void execute(CommandContext ctx, Store<EntityStore> store, Ref<EntityStore> ref,
                            PlayerRef player, World world) {
         if (!ctx.sender().hasPermission("playtime.check")) {
-            ctx.sendMessage(color(Playtime.get().getConfigManager().getConfig().messages.noPermission));
+            ctx.sendMessage(ColorUtil.color(Playtime.get().getConfigManager().getConfig().messages.noPermission));
             return;
         }
 
         long total = Playtime.get().getService().getTotalPlaytime(player.getUuid().toString());
         String msg = Playtime.get().getConfigManager().getConfig().messages.selfCheck
-                .replace("%time%", format(total))
+                .replace("%time%", TimeUtil.format(total))
                 .replace("%player%", player.getUsername());
-        ctx.sendMessage(color(msg));
-    }
-
-    private static Message color(String text) {
-        if (!text.contains("&")) return Message.raw(text);
-        List<Message> messageParts = new ArrayList<>();
-        String[] parts = text.split("(?=&[0-9a-fk-or])");
-        for (String part : parts) {
-            if (part.length() < 2 || part.charAt(0) != '&') {
-                messageParts.add(Message.raw(part));
-                continue;
-            }
-            char code = part.charAt(1);
-            String content = part.substring(2);
-            String hex = getHexFromCode(code);
-            if (hex != null) messageParts.add(Message.raw(content).color(hex));
-            else messageParts.add(Message.raw(content));
-        }
-        return Message.join(messageParts.toArray(new Message[0]));
-    }
-
-    private static String getHexFromCode(char code) {
-        switch (code) {
-            case '0': return "#000000"; case '1': return "#0000AA"; case '2': return "#00AA00";
-            case '3': return "#00AAAA"; case '4': return "#AA0000"; case '5': return "#AA00AA";
-            case '6': return "#FFAA00"; case '7': return "#AAAAAA"; case '8': return "#555555";
-            case '9': return "#5555FF"; case 'a': return "#55FF55"; case 'b': return "#55FFFF";
-            case 'c': return "#FF5555"; case 'd': return "#FF55FF"; case 'e': return "#FFFF55";
-            case 'f': return "#FFFFFF"; default: return null;
-        }
-    }
-
-    private static String format(long millis) {
-        long hours = TimeUnit.MILLISECONDS.toHours(millis);
-        long minutes = TimeUnit.MILLISECONDS.toMinutes(millis) % 60;
-        return hours + "h " + minutes + "m";
+        ctx.sendMessage(ColorUtil.color(msg));
     }
 
     private static void showTop(CommandContext ctx, PlayerRef player, String periodArg) {
         if (!ctx.sender().hasPermission("playtime.top")) {
-            ctx.sendMessage(color(Playtime.get().getConfigManager().getConfig().messages.noPermission));
+            ctx.sendMessage(ColorUtil.color(Playtime.get().getConfigManager().getConfig().messages.noPermission));
             return;
         }
 
@@ -108,15 +73,15 @@ public class PlaytimeCommand extends AbstractPlayerCommand {
 
         if (mode == null) {
             String valid = String.join(", ", p.daily, p.weekly, p.monthly, p.all);
-            ctx.sendMessage(color(cfg.messages.errorInvalidPeriod.replace("%valid_periods%", valid)));
+            ctx.sendMessage(ColorUtil.color(cfg.messages.errorInvalidPeriod.replace("%valid_periods%", valid)));
             return;
         }
 
         Map<String, Long> sorted = Playtime.get().getService().getTopPlayers(mode);
-        ctx.sendMessage(color(cfg.messages.leaderboardHeader.replace("%period_name%", periodArg)));
+        ctx.sendMessage(ColorUtil.color(cfg.messages.leaderboardHeader.replace("%period_name%", periodArg)));
 
         if (sorted.isEmpty()) {
-            ctx.sendMessage(color(cfg.messages.leaderboardEmpty));
+            ctx.sendMessage(ColorUtil.color(cfg.messages.leaderboardEmpty));
             return;
         }
 
@@ -125,8 +90,8 @@ public class PlaytimeCommand extends AbstractPlayerCommand {
             String line = cfg.messages.leaderboardEntry
                     .replace("%rank%", String.valueOf(rank))
                     .replace("%player%", entry.getKey())
-                    .replace("%time%", format(entry.getValue()));
-            ctx.sendMessage(color(line));
+                    .replace("%time%", TimeUtil.format(entry.getValue()));
+            ctx.sendMessage(ColorUtil.color(line));
             rank++;
         }
     }
@@ -165,7 +130,7 @@ public class PlaytimeCommand extends AbstractPlayerCommand {
             }
             if (arg.equalsIgnoreCase("admin")) {
                 if (!ctx.sender().hasPermission("playtime.admin")) {
-                    ctx.sendMessage(color(config.messages.noPermission));
+                    ctx.sendMessage(ColorUtil.color(config.messages.noPermission));
                     return;
                 }
                 showAdminGuide(ctx);
@@ -173,7 +138,7 @@ public class PlaytimeCommand extends AbstractPlayerCommand {
             }
             if (arg.equalsIgnoreCase("menu") || arg.equalsIgnoreCase("gui")) {
                 if (!ctx.sender().hasPermission("playtime.gui")) {
-                    ctx.sendMessage(color(config.messages.noPermission));
+                    ctx.sendMessage(ColorUtil.color(config.messages.noPermission));
                     return;
                 }
                 if (ctx.sender() instanceof Player senderPlayer) {
@@ -183,14 +148,14 @@ public class PlaytimeCommand extends AbstractPlayerCommand {
             }
             if (arg.equalsIgnoreCase(periods.reload)) {
                 if (!ctx.sender().hasPermission("playtime.reload")) {
-                    ctx.sendMessage(color(config.messages.reloadNoPermission));
+                    ctx.sendMessage(ColorUtil.color(config.messages.reloadNoPermission));
                     return;
                 }
                 try {
                     Playtime.get().getConfigManager().load();
-                    ctx.sendMessage(color(config.messages.reloadSuccess));
+                    ctx.sendMessage(ColorUtil.color(config.messages.reloadSuccess));
                 } catch (Exception e) {
-                    ctx.sendMessage(color(config.messages.reloadFailed));
+                    ctx.sendMessage(ColorUtil.color(config.messages.reloadFailed));
                     e.printStackTrace();
                 }
                 return;
@@ -211,47 +176,47 @@ public class PlaytimeCommand extends AbstractPlayerCommand {
                 return;
             }
 
-            ctx.sendMessage(color("&cUnknown command. Try /playtime help"));
+            ctx.sendMessage(ColorUtil.color("&cUnknown command. Try /playtime help"));
         }
 
         private void showHelp(CommandContext ctx) {
-            ctx.sendMessage(color("&6--- Playtime Help ---"));
-            ctx.sendMessage(color("&e/playtime &7- Check your playtime"));
-            ctx.sendMessage(color("&e/playtime rewards &7- List your rewards"));
-            ctx.sendMessage(color("&e/playtime milestones &7- View milestones progress"));
-            ctx.sendMessage(color("&e/playtime top [period] &7- Check leaderboard"));
-            ctx.sendMessage(color("&e/playtime version &7- Show plugin version info"));
+            ctx.sendMessage(ColorUtil.color("&6--- Playtime Help ---"));
+            ctx.sendMessage(ColorUtil.color("&e/playtime &7- Check your playtime"));
+            ctx.sendMessage(ColorUtil.color("&e/playtime rewards &7- List your rewards"));
+            ctx.sendMessage(ColorUtil.color("&e/playtime milestones &7- View milestones progress"));
+            ctx.sendMessage(ColorUtil.color("&e/playtime top [period] &7- Check leaderboard"));
+            ctx.sendMessage(ColorUtil.color("&e/playtime version &7- Show plugin version info"));
             if (ctx.sender().hasPermission("playtime.admin")) {
-                ctx.sendMessage(color("&c--- Admin ---"));
-                ctx.sendMessage(color("&c/playtime admin &7- Show reward creation guide"));
-                ctx.sendMessage(color("&c/playtime admin listRewards &7- List configured rewards"));
-                ctx.sendMessage(color("&c/playtime admin listMilestones &7- List configured milestones"));
-                ctx.sendMessage(color("&c/playtime admin addReward &7- Add a new reward"));
-                ctx.sendMessage(color("&c/playtime admin removeReward <id> &7- Remove a reward"));
-                ctx.sendMessage(color("&c/playtime reload &7- Reload config"));
+                ctx.sendMessage(ColorUtil.color("&c--- Admin ---"));
+                ctx.sendMessage(ColorUtil.color("&c/playtime admin &7- Show reward creation guide"));
+                ctx.sendMessage(ColorUtil.color("&c/playtime admin listRewards &7- List configured rewards"));
+                ctx.sendMessage(ColorUtil.color("&c/playtime admin listMilestones &7- List configured milestones"));
+                ctx.sendMessage(ColorUtil.color("&c/playtime admin addReward &7- Add a new reward"));
+                ctx.sendMessage(ColorUtil.color("&c/playtime admin removeReward <id> &7- Remove a reward"));
+                ctx.sendMessage(ColorUtil.color("&c/playtime reload &7- Reload config"));
             }
         }
 
         private void showVersion(CommandContext ctx) {
-            ctx.sendMessage(color("&6--- Playtime Info ---"));
-            ctx.sendMessage(color("&eVersion: &f" + BuildInfo.VERSION));
-            ctx.sendMessage(color("&eJava: &f" + BuildInfo.JAVA_VERSION));
-            ctx.sendMessage(color("&eHyperPerms: &f" + (HyperPermsIntegration.isAvailable() ? "Connected" : "Not available")));
+            ctx.sendMessage(ColorUtil.color("&6--- Playtime Info ---"));
+            ctx.sendMessage(ColorUtil.color("&eVersion: &f" + BuildInfo.VERSION));
+            ctx.sendMessage(ColorUtil.color("&eJava: &f" + BuildInfo.JAVA_VERSION));
+            ctx.sendMessage(ColorUtil.color("&eHyperPerms: &f" + (HyperPermsIntegration.isAvailable() ? "Connected" : "Not available")));
         }
 
         private void showMilestones(CommandContext ctx, PlayerRef player) {
             if (!ctx.sender().hasPermission("playtime.milestones")) {
-                ctx.sendMessage(color(Playtime.get().getConfigManager().getConfig().messages.noPermission));
+                ctx.sendMessage(ColorUtil.color(Playtime.get().getConfigManager().getConfig().messages.noPermission));
                 return;
             }
 
             PlaytimeConfig config = Playtime.get().getConfigManager().getConfig();
             if (!config.milestones.enabled || config.milestones.list.isEmpty()) {
-                ctx.sendMessage(color("&7No milestones configured."));
+                ctx.sendMessage(ColorUtil.color("&7No milestones configured."));
                 return;
             }
 
-            ctx.sendMessage(color("&6--- Milestones ---"));
+            ctx.sendMessage(ColorUtil.color("&6--- Milestones ---"));
             String uuid = player.getUuid().toString();
 
             for (Milestone m : config.milestones.list) {
@@ -265,26 +230,26 @@ public class PlaytimeCommand extends AbstractPlayerCommand {
                 } else if (eligible) {
                     status = "&e[READY]";
                 } else {
-                    status = "&c[" + format(playtime) + " / " + format(m.timeRequirement) + "]";
+                    status = "&c[" + TimeUtil.format(playtime) + " / " + TimeUtil.format(m.timeRequirement) + "]";
                 }
 
-                ctx.sendMessage(color("&e" + m.id + " &7(" + m.period + "): " + status));
+                ctx.sendMessage(ColorUtil.color("&e" + m.id + " &7(" + m.period + "): " + status));
             }
         }
 
         private void showAdminGuide(CommandContext ctx) {
-            ctx.sendMessage(color("&6--- Playtime Reward Guide ---"));
-            ctx.sendMessage(color("&eHow to add a reward:"));
-            ctx.sendMessage(color("&f/playtime admin addReward <id> <period> <time> <command>"));
-            ctx.sendMessage(color("&7- &eid&7: Unique name (e.g. daily_gold)"));
-            ctx.sendMessage(color("&7- &eperiod&7: daily, weekly, monthly, or all"));
-            ctx.sendMessage(color("&7- &etime&7: 30m, 1h, 1d, 10s"));
-            ctx.sendMessage(color("&7- &ecommand&7: The console command. Use &f%player% &7for username."));
-            ctx.sendMessage(color("&7  Example: &f/playtime admin addReward daily_gold daily 1h \"give %player% gold 10\""));
+            ctx.sendMessage(ColorUtil.color("&6--- Playtime Reward Guide ---"));
+            ctx.sendMessage(ColorUtil.color("&eHow to add a reward:"));
+            ctx.sendMessage(ColorUtil.color("&f/playtime admin addReward <id> <period> <time> <command>"));
+            ctx.sendMessage(ColorUtil.color("&7- &eid&7: Unique name (e.g. daily_gold)"));
+            ctx.sendMessage(ColorUtil.color("&7- &eperiod&7: daily, weekly, monthly, or all"));
+            ctx.sendMessage(ColorUtil.color("&7- &etime&7: 30m, 1h, 1d, 10s"));
+            ctx.sendMessage(ColorUtil.color("&7- &ecommand&7: The console command. Use &f%player% &7for username."));
+            ctx.sendMessage(ColorUtil.color("&7  Example: &f/playtime admin addReward daily_gold daily 1h \"give %player% gold 10\""));
         }
 
         private void listUserRewards(CommandContext ctx, PlayerRef player, PlaytimeConfig cfg) {
-            ctx.sendMessage(color(cfg.messages.rewardListHeader));
+            ctx.sendMessage(ColorUtil.color(cfg.messages.rewardListHeader));
 
             String uuid = player.getUuid().toString();
 
@@ -306,8 +271,8 @@ public class PlaytimeCommand extends AbstractPlayerCommand {
                 String line = cfg.messages.rewardListEntry
                         .replace("%id%", r.id)
                         .replace("%period%", r.period)
-                        .replace("%status%", status + " &7(" + format(r.timeRequirement) + ")");
-                ctx.sendMessage(color(line));
+                        .replace("%status%", status + " &7(" + TimeUtil.format(r.timeRequirement) + ")");
+                ctx.sendMessage(ColorUtil.color(line));
             }
         }
     }
@@ -334,42 +299,42 @@ public class PlaytimeCommand extends AbstractPlayerCommand {
 
             if (a1.equalsIgnoreCase("admin") && a2.equalsIgnoreCase("listRewards")) {
                 if (!ctx.sender().hasPermission("playtime.admin")) {
-                    ctx.sendMessage(color("&cNo permission.")); return;
+                    ctx.sendMessage(ColorUtil.color("&cNo permission.")); return;
                 }
-                ctx.sendMessage(color("&6--- Configured Rewards (Admin) ---"));
+                ctx.sendMessage(ColorUtil.color("&6--- Configured Rewards (Admin) ---"));
                 PlaytimeConfig cfg = Playtime.get().getConfigManager().getConfig();
                 for (Reward r : cfg.rewards) {
-                    ctx.sendMessage(color("&eID: &f" + r.id));
-                    ctx.sendMessage(color("  &7Period: " + r.period));
-                    ctx.sendMessage(color("  &7Time: " + format(r.timeRequirement)));
-                    ctx.sendMessage(color("  &7Cmd: " + (r.commands.isEmpty() ? "None" : r.commands.get(0))));
+                    ctx.sendMessage(ColorUtil.color("&eID: &f" + r.id));
+                    ctx.sendMessage(ColorUtil.color("  &7Period: " + r.period));
+                    ctx.sendMessage(ColorUtil.color("  &7Time: " + TimeUtil.format(r.timeRequirement)));
+                    ctx.sendMessage(ColorUtil.color("  &7Cmd: " + (r.commands.isEmpty() ? "None" : r.commands.get(0))));
                 }
                 return;
             }
 
             if (a1.equalsIgnoreCase("admin") && a2.equalsIgnoreCase("listMilestones")) {
                 if (!ctx.sender().hasPermission("playtime.admin")) {
-                    ctx.sendMessage(color("&cNo permission.")); return;
+                    ctx.sendMessage(ColorUtil.color("&cNo permission.")); return;
                 }
                 PlaytimeConfig cfg = Playtime.get().getConfigManager().getConfig();
-                ctx.sendMessage(color("&6--- Configured Milestones (Admin) ---"));
-                ctx.sendMessage(color("&7Milestones enabled: &f" + cfg.milestones.enabled));
+                ctx.sendMessage(ColorUtil.color("&6--- Configured Milestones (Admin) ---"));
+                ctx.sendMessage(ColorUtil.color("&7Milestones enabled: &f" + cfg.milestones.enabled));
                 if (cfg.milestones.list.isEmpty()) {
-                    ctx.sendMessage(color("&7No milestones configured."));
+                    ctx.sendMessage(ColorUtil.color("&7No milestones configured."));
                 } else {
                     for (Milestone m : cfg.milestones.list) {
-                        ctx.sendMessage(color("&eID: &f" + m.id));
-                        ctx.sendMessage(color("  &7Period: " + m.period));
-                        ctx.sendMessage(color("  &7Time: " + format(m.timeRequirement)));
-                        ctx.sendMessage(color("  &7Permissions: " + (m.grantPermissions == null || m.grantPermissions.isEmpty() ? "None" : String.join(", ", m.grantPermissions))));
-                        ctx.sendMessage(color("  &7Group: " + (m.addToGroup == null ? "None" : m.addToGroup)));
-                        ctx.sendMessage(color("  &7Repeatable: " + m.repeatable));
+                        ctx.sendMessage(ColorUtil.color("&eID: &f" + m.id));
+                        ctx.sendMessage(ColorUtil.color("  &7Period: " + m.period));
+                        ctx.sendMessage(ColorUtil.color("  &7Time: " + TimeUtil.format(m.timeRequirement)));
+                        ctx.sendMessage(ColorUtil.color("  &7Permissions: " + (m.grantPermissions == null || m.grantPermissions.isEmpty() ? "None" : String.join(", ", m.grantPermissions))));
+                        ctx.sendMessage(ColorUtil.color("  &7Group: " + (m.addToGroup == null ? "None" : m.addToGroup)));
+                        ctx.sendMessage(ColorUtil.color("  &7Repeatable: " + m.repeatable));
                     }
                 }
                 return;
             }
 
-            ctx.sendMessage(color("&cUnknown command. Usage: /playtime <action> [arg]"));
+            ctx.sendMessage(ColorUtil.color("&cUnknown command. Usage: /playtime <action> [arg]"));
         }
     }
 
@@ -391,7 +356,7 @@ public class PlaytimeCommand extends AbstractPlayerCommand {
             if (!ctx.get(arg2).equalsIgnoreCase("removeReward")) return;
 
             if (!ctx.sender().hasPermission("playtime.admin")) {
-                ctx.sendMessage(color("&cNo permission.")); return;
+                ctx.sendMessage(ColorUtil.color("&cNo permission.")); return;
             }
 
             String id = ctx.get(idArg);
@@ -401,9 +366,9 @@ public class PlaytimeCommand extends AbstractPlayerCommand {
 
             if (removed) {
                 Playtime.get().getConfigManager().save();
-                ctx.sendMessage(color(config.messages.rewardRemoved.replace("%id%", id)));
+                ctx.sendMessage(ColorUtil.color(config.messages.rewardRemoved.replace("%id%", id)));
             } else {
-                ctx.sendMessage(color(config.messages.rewardNotFound.replace("%id%", id)));
+                ctx.sendMessage(ColorUtil.color(config.messages.rewardNotFound.replace("%id%", id)));
             }
         }
     }
@@ -431,7 +396,7 @@ public class PlaytimeCommand extends AbstractPlayerCommand {
         @Override
         protected void execute(CommandContext ctx, Store<EntityStore> store, Ref<EntityStore> ref, PlayerRef player, World world) {
             if (!ctx.sender().hasPermission("playtime.admin")) {
-                ctx.sendMessage(color("&cYou do not have permission."));
+                ctx.sendMessage(ColorUtil.color("&cYou do not have permission."));
                 return;
             }
 
@@ -444,9 +409,9 @@ public class PlaytimeCommand extends AbstractPlayerCommand {
             String timeStr = ctx.get(timeArg);
             String cmdToRun = ctx.get(commandArg);
 
-            long ms = parseTime(timeStr);
+            long ms = TimeUtil.parseTime(timeStr);
             if (ms <= 0) {
-                ctx.sendMessage(color("&cInvalid time format. Use 30m, 1h, 1d."));
+                ctx.sendMessage(ColorUtil.color("&cInvalid time format. Use 30m, 1h, 1d."));
                 return;
             }
 
@@ -460,25 +425,8 @@ public class PlaytimeCommand extends AbstractPlayerCommand {
             config.rewards.add(newReward);
             Playtime.get().getConfigManager().save();
 
-            ctx.sendMessage(color(config.messages.rewardAdded.replace("%id%", id)));
+            ctx.sendMessage(ColorUtil.color(config.messages.rewardAdded.replace("%id%", id)));
         }
 
-        private long parseTime(String input) {
-            try {
-                String number = input.replaceAll("[^0-9]", "");
-                String unit = input.replaceAll("[0-9]", "").toLowerCase();
-                if (number.isEmpty()) return -1;
-                long val = Long.parseLong(number);
-                switch (unit) {
-                    case "s": return val * 1000;
-                    case "m": return val * 60 * 1000;
-                    case "h": return val * 60 * 60 * 1000;
-                    case "d": return val * 24 * 60 * 60 * 1000;
-                    default: return val;
-                }
-            } catch (Exception e) {
-                return -1;
-            }
-        }
     }
 }

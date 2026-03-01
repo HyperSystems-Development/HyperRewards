@@ -15,10 +15,10 @@ import com.hypixel.hytale.server.core.universe.PlayerRef;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import com.zib.playtime.Playtime;
 import com.zib.playtime.config.PlaytimeConfig;
+import com.zib.playtime.util.TimeUtil;
 
 import javax.annotation.Nonnull;
 import java.util.Map;
-import java.util.concurrent.TimeUnit;
 
 public class PlaytimeLeaderboardGui extends InteractiveCustomUIPage<PlaytimeLeaderboardGui.LeaderboardData> {
 
@@ -74,7 +74,7 @@ public class PlaytimeLeaderboardGui extends InteractiveCustomUIPage<PlaytimeLead
             String elementId = "#ListContainer[" + index + "]";
             cmd.set(elementId + " #Rank.Text", "#" + (index + 1));
             cmd.set(elementId + " #Name.Text", entry.getKey());
-            cmd.set(elementId + " #Time.Text", format(entry.getValue()));
+            cmd.set(elementId + " #Time.Text", TimeUtil.format(entry.getValue()));
 
             index++;
         }
@@ -83,7 +83,7 @@ public class PlaytimeLeaderboardGui extends InteractiveCustomUIPage<PlaytimeLead
         int myRank = Playtime.get().getService().getRank(playerRef.getUuid().toString(), currentPeriod);
 
         cmd.set("#SelfRank.Text", myRank > 0 ? gui.rankPrefix + myRank : gui.rankPrefix + "N/A");
-        cmd.set("#SelfTime.Text", gui.timePrefix + format(myTime));
+        cmd.set("#SelfTime.Text", gui.timePrefix + TimeUtil.format(myTime));
     }
 
     private void bindButton(UIEventBuilder events, String id, String action) {
@@ -101,12 +101,6 @@ public class PlaytimeLeaderboardGui extends InteractiveCustomUIPage<PlaytimeLead
             refreshLeaderboard(cmd);
             this.sendUpdate(cmd);
         }
-    }
-
-    private String format(long millis) {
-        long hours = TimeUnit.MILLISECONDS.toHours(millis);
-        long minutes = TimeUnit.MILLISECONDS.toMinutes(millis) % 60;
-        return hours + "h " + minutes + "m";
     }
 
     public static class LeaderboardData {

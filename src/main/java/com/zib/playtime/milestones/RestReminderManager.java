@@ -1,17 +1,17 @@
 package com.zib.playtime.milestones;
 
-import com.hypixel.hytale.server.core.Message;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
 import com.hypixel.hytale.server.core.universe.Universe;
 import com.zib.playtime.Playtime;
 import com.zib.playtime.config.PlaytimeConfig;
 import com.zib.playtime.listeners.SessionListener;
+import com.zib.playtime.util.ColorUtil;
+import com.zib.playtime.util.TimeUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.TimeUnit;
 
 /**
  * Sends periodic rest reminders to players based on continuous session time.
@@ -56,48 +56,14 @@ public class RestReminderManager {
 
         // Send reminder if we haven't sent one yet, or if enough time has passed
         if (lastReminder == null || (now - lastReminder) >= interval) {
-            String sessionFormatted = formatTime(sessionTime);
+            String sessionFormatted = TimeUtil.format(sessionTime);
             String msg = config.restReminder.message
                     .replace("%session_time%", sessionFormatted)
                     .replace("%player%", player.getUsername());
 
-            Universe.get().sendMessage(uuid, color(msg));
+            Universe.get().sendMessage(uuid, ColorUtil.color(msg));
             lastReminderTime.put(uuid, now);
         }
     }
 
-    private String formatTime(long millis) {
-        long hours = TimeUnit.MILLISECONDS.toHours(millis);
-        long minutes = TimeUnit.MILLISECONDS.toMinutes(millis) % 60;
-        return hours + "h " + minutes + "m";
-    }
-
-    private Message color(String text) {
-        if (!text.contains("&")) return Message.raw(text);
-        List<Message> messageParts = new ArrayList<>();
-        String[] parts = text.split("(?=&[0-9a-fk-or])");
-        for (String part : parts) {
-            if (part.length() < 2 || part.charAt(0) != '&') {
-                messageParts.add(Message.raw(part));
-                continue;
-            }
-            char code = part.charAt(1);
-            String content = part.substring(2);
-            String hex = getHexFromCode(code);
-            if (hex != null) messageParts.add(Message.raw(content).color(hex));
-            else messageParts.add(Message.raw(content));
-        }
-        return Message.join(messageParts.toArray(new Message[0]));
-    }
-
-    private String getHexFromCode(char code) {
-        return switch (code) {
-            case '0' -> "#000000"; case '1' -> "#0000AA"; case '2' -> "#00AA00";
-            case '3' -> "#00AAAA"; case '4' -> "#AA0000"; case '5' -> "#AA00AA";
-            case '6' -> "#FFAA00"; case '7' -> "#AAAAAA"; case '8' -> "#555555";
-            case '9' -> "#5555FF"; case 'a' -> "#55FF55"; case 'b' -> "#55FFFF";
-            case 'c' -> "#FF5555"; case 'd' -> "#FF55FF"; case 'e' -> "#FFFF55";
-            case 'f' -> "#FFFFFF"; default -> null;
-        };
-    }
 }

@@ -5,12 +5,12 @@ import com.zib.playtime.Playtime;
 import com.zib.playtime.PlaytimeService;
 import com.zib.playtime.config.Milestone;
 import com.zib.playtime.listeners.SessionListener;
+import com.zib.playtime.util.TimeUtil;
 
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-import java.util.concurrent.TimeUnit;
 
 public class PlaytimeAPI {
 
@@ -115,8 +115,6 @@ public class PlaytimeAPI {
      * @return Formatted string.
      */
     public String formatTime(long millis) {
-        long hours = TimeUnit.MILLISECONDS.toHours(millis);
-        long minutes = TimeUnit.MILLISECONDS.toMinutes(millis) % 60;
-        return hours + "h " + minutes + "m";
+        return TimeUtil.format(millis);
     }
 }
