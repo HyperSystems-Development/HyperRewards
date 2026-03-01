@@ -114,6 +114,11 @@ public class DatabaseManager {
             stmt.execute(sessionsSql);
             stmt.execute(rewardsSql);
             stmt.execute(milestonesSql);
+            stmt.execute("CREATE INDEX IF NOT EXISTS idx_sessions_uuid ON playtime_sessions(uuid)");
+            stmt.execute("CREATE INDEX IF NOT EXISTS idx_sessions_date ON playtime_sessions(session_date)");
+            stmt.execute("CREATE INDEX IF NOT EXISTS idx_sessions_uuid_date ON playtime_sessions(uuid, session_date)");
+            stmt.execute("CREATE INDEX IF NOT EXISTS idx_rewards_uuid ON playtime_rewards_log(uuid, reward_id)");
+            stmt.execute("CREATE INDEX IF NOT EXISTS idx_milestones_uuid ON playtime_milestones_log(uuid, milestone_id)");
             logger.info("Successfully created/verified database tables.");
         } catch (SQLException e) {
             logger.error("Failed to create table: " + e.getMessage(), e);
