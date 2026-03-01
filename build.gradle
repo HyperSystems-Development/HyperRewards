@@ -98,10 +98,10 @@ tasks.register('generateBuildInfo') {
     outputs.dir(outputDir)
     doLast {
         def v = ver.get()
-        def dir = outputDir.get().asFile.toPath().resolve("com/zib/playtime").toFile()
+        def dir = outputDir.get().asFile.toPath().resolve("com/hypersystems/hyperrewards").toFile()
         dir.mkdirs()
         new File(dir, "BuildInfo.java").text = """\
-package com.zib.playtime;
+package com.hypersystems.hyperrewards;
 
 /**
  * Auto-generated build information.
@@ -142,8 +142,8 @@ shadowJar {
     archiveClassifier.set('')
 
     // Relocate dependencies to avoid conflicts
-    relocate 'com.google.gson', 'com.zib.playtime.lib.gson'
-    relocate 'com.zaxxer.hikari', 'com.zib.playtime.lib.hikari'
+    relocate 'com.google.gson', 'com.hypersystems.hyperrewards.lib.gson'
+    relocate 'com.zaxxer.hikari', 'com.hypersystems.hyperrewards.lib.hikari'
 }
 
 build {

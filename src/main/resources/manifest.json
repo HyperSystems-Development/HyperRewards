@@ -1,15 +1,15 @@
 {
-  "Group": "Playtime",
-  "Name": "Playtime",
+  "Group": "HyperRewards",
+  "Name": "HyperRewards",
   "Version": "${version}",
-  "Description": "Advanced playtime tracking with leaderboards, milestones, database support, and live stats.",
+  "Description": "Advanced playtime tracking with rewards, milestones, leaderboards, and live stats.",
   "Authors": [
     {
-      "Name": "Zib"
+      "Name": "HyperSystems"
     }
   ],
-  "Website": "https://github.com/HyperSystemsDev/AdvancedPlaytime",
-  "Main": "com.zib.playtime.Playtime",
+  "Website": "https://github.com/HyperSystemsDev/HyperRewards",
+  "Main": "com.hypersystems.hyperrewards.HyperRewards",
   "ServerVersion": "${serverVersion}",
   "Dependencies": {},
   "OptionalDependencies": {
