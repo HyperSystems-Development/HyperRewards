@@ -73,6 +73,7 @@ public class Playtime extends JavaPlugin {
         // Schedule periodic tasks (rewards, milestones, rest reminders) - every 1 minute
         HytaleServer.SCHEDULED_EXECUTOR.scheduleAtFixedRate(() -> {
             try {
+                SessionListener.saveActiveSessions();
                 rewardManager.checkRewards();
                 if (cfg.milestones.enabled) {
                     milestoneManager.checkMilestones();
