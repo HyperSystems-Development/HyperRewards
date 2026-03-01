@@ -183,6 +183,7 @@ public class PlaytimeCommand extends AbstractPlayerCommand {
             ctx.sendMessage(ColorUtil.color("&6--- Playtime Help ---"));
             ctx.sendMessage(ColorUtil.color("&e/playtime &7- Check your playtime"));
             ctx.sendMessage(ColorUtil.color("&e/playtime rewards &7- List your rewards"));
+            ctx.sendMessage(ColorUtil.color("&e/playtime check <player> &7- View another player's playtime"));
             ctx.sendMessage(ColorUtil.color("&e/playtime milestones &7- View milestones progress"));
             ctx.sendMessage(ColorUtil.color("&e/playtime top [period] &7- Check leaderboard"));
             ctx.sendMessage(ColorUtil.color("&e/playtime version &7- Show plugin version info"));
@@ -291,6 +292,26 @@ public class PlaytimeCommand extends AbstractPlayerCommand {
         protected void execute(CommandContext ctx, Store<EntityStore> store, Ref<EntityStore> ref, PlayerRef player, World world) {
             String a1 = ctx.get(arg1);
             String a2 = ctx.get(arg2);
+
+            if (a1.equalsIgnoreCase("check")) {
+                if (!ctx.sender().hasPermission("playtime.check.others")) {
+                    ctx.sendMessage(ColorUtil.color(Playtime.get().getConfigManager().getConfig().messages.noPermission));
+                    return;
+                }
+                String targetName = a2;
+                String targetUuid = Playtime.get().getService().getUuidByUsername(targetName);
+                if (targetUuid == null) {
+                    ctx.sendMessage(ColorUtil.color("&cPlayer '" + targetName + "' not found."));
+                    return;
+                }
+                long total = Playtime.get().getService().getTotalPlaytime(targetUuid);
+                PlaytimeConfig cfg = Playtime.get().getConfigManager().getConfig();
+                String msg = cfg.messages.otherCheck
+                        .replace("%player%", targetName)
+                        .replace("%time%", TimeUtil.format(total));
+                ctx.sendMessage(ColorUtil.color(msg));
+                return;
+            }
 
             if (a1.equalsIgnoreCase("top")) {
                 showTop(ctx, player, a2.toLowerCase());

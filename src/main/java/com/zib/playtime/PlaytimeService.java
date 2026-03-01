@@ -139,4 +139,16 @@ public class PlaytimeService {
         }
         return "";
     }
+
+    public String getUuidByUsername(String username) {
+        String query = "SELECT uuid FROM playtime_sessions WHERE username = ? ORDER BY start_time DESC LIMIT 1";
+        try (Connection conn = db.getConnection(); PreparedStatement ps = conn.prepareStatement(query)) {
+            ps.setString(1, username);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) return rs.getString("uuid");
+        } catch (SQLException e) {
+            logger.error("Failed to look up UUID for username {}", username, e);
+        }
+        return null;
+    }
 }
