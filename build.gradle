@@ -64,6 +64,11 @@ dependencies {
     // Database - HikariCP connection pooling
     implementation 'com.zaxxer:HikariCP:6.2.1'
 
+    // SLF4J 2.x — overrides HikariCP's transitive 1.7.x to eliminate
+    // "Failed to load class StaticLoggerBinder" warning (2.x uses ServiceLoader)
+    implementation 'org.slf4j:slf4j-api:2.0.16'
+    implementation 'org.slf4j:slf4j-nop:2.0.16'
+
     // Database - MySQL JDBC driver
     implementation 'com.mysql:mysql-connector-j:8.4.0'
 
@@ -136,9 +141,10 @@ jar {
 shadowJar {
     archiveClassifier.set('')
 
-    // Relocate dependencies to avoid conflicts
+    // Relocate dependencies to avoid conflicts with other plugins
     relocate 'com.google.gson', 'com.hypersystems.hyperrewards.lib.gson'
     relocate 'com.zaxxer.hikari', 'com.hypersystems.hyperrewards.lib.hikari'
+    relocate 'org.slf4j', 'com.hypersystems.hyperrewards.lib.slf4j'
 }
 
 build {
