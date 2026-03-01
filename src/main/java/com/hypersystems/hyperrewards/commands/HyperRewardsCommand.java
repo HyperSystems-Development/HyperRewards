@@ -193,7 +193,7 @@ public class HyperRewardsCommand extends AbstractPlayerCommand {
                 ctx.sendMessage(ColorUtil.color("&c/playtime admin &7- Show reward creation guide"));
                 ctx.sendMessage(ColorUtil.color("&c/playtime admin listRewards &7- List configured rewards"));
                 ctx.sendMessage(ColorUtil.color("&c/playtime admin listMilestones &7- List configured milestones"));
-                ctx.sendMessage(ColorUtil.color("&c/playtime admin addReward &7- Add a new reward"));
+                ctx.sendMessage(ColorUtil.color("&c/playtime admin addReward <id> <period> <time> &7- Add a new reward"));
                 ctx.sendMessage(ColorUtil.color("&c/playtime admin removeReward <id> &7- Remove a reward"));
                 ctx.sendMessage(ColorUtil.color("&c/playtime reload &7- Reload config"));
             }
@@ -242,12 +242,12 @@ public class HyperRewardsCommand extends AbstractPlayerCommand {
         private void showAdminGuide(CommandContext ctx) {
             ctx.sendMessage(ColorUtil.color("&6--- HyperRewards Reward Guide ---"));
             ctx.sendMessage(ColorUtil.color("&eHow to add a reward:"));
-            ctx.sendMessage(ColorUtil.color("&f/playtime admin addReward <id> <period> <time> <command>"));
+            ctx.sendMessage(ColorUtil.color("&f/playtime admin addReward <id> <period> <time>"));
             ctx.sendMessage(ColorUtil.color("&7- &eid&7: Unique name (e.g. daily_gold)"));
             ctx.sendMessage(ColorUtil.color("&7- &eperiod&7: daily, weekly, monthly, or all"));
             ctx.sendMessage(ColorUtil.color("&7- &etime&7: 30m, 1h, 1d, 10s"));
-            ctx.sendMessage(ColorUtil.color("&7- &ecommand&7: The console command. Use &f%player% &7for username."));
-            ctx.sendMessage(ColorUtil.color("&7  Example: &f/playtime admin addReward daily_gold daily 1h \"give %player% gold 10\""));
+            ctx.sendMessage(ColorUtil.color("&7  Example: &f/playtime admin addReward daily_gold daily 1h"));
+            ctx.sendMessage(ColorUtil.color("&7Then edit &fconfig.json &7to set the reward command under &frewards > commands"));
         }
 
         private void listUserRewards(CommandContext ctx, PlayerRef player, HyperRewardsConfig cfg) {
@@ -401,7 +401,6 @@ public class HyperRewardsCommand extends AbstractPlayerCommand {
         private final RequiredArg<String> idArg;
         private final RequiredArg<String> periodArg;
         private final RequiredArg<String> timeArg;
-        private final RequiredArg<String> commandArg;
 
         public AdminRewardCommand(String name) {
             super(name);
@@ -410,7 +409,6 @@ public class HyperRewardsCommand extends AbstractPlayerCommand {
             this.idArg = withRequiredArg("id", "ID", ArgTypes.STRING);
             this.periodArg = withRequiredArg("period", "Period", ArgTypes.STRING);
             this.timeArg = withRequiredArg("time", "Time", ArgTypes.STRING);
-            this.commandArg = withRequiredArg("command", "Command", ArgTypes.STRING);
         }
 
         @Override protected boolean canGeneratePermission() { return false; }
@@ -429,7 +427,6 @@ public class HyperRewardsCommand extends AbstractPlayerCommand {
             String id = ctx.get(idArg);
             String period = ctx.get(periodArg).toLowerCase();
             String timeStr = ctx.get(timeArg);
-            String cmdToRun = ctx.get(commandArg);
 
             long ms = TimeUtil.parseTime(timeStr);
             if (ms <= 0) {
@@ -438,7 +435,7 @@ public class HyperRewardsCommand extends AbstractPlayerCommand {
             }
 
             List<String> cmds = new ArrayList<>();
-            cmds.add(cmdToRun);
+            cmds.add("say %player% claimed the " + id + " reward!");
 
             String broadcast = "&6%player% &ehas played for &6%time% &eand claimed the &6" + id + " &ereward!";
             Reward newReward = new Reward(id, period, ms, cmds, broadcast);
@@ -448,6 +445,7 @@ public class HyperRewardsCommand extends AbstractPlayerCommand {
             HyperRewards.get().getConfigManager().save();
 
             ctx.sendMessage(ColorUtil.color(config.messages.rewardAdded.replace("%id%", id)));
+            ctx.sendMessage(ColorUtil.color("&7Edit the reward command in &fconfig.json &7under &frewards &7> &fcommands"));
         }
 
     }
