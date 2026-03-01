@@ -46,21 +46,16 @@ java {
 repositories {
     mavenCentral()
     maven { url = "https://maven.hytale.com/${hytaleChannel}" }
-    if (!isMonorepo) {
-        // Standalone build: resolve HyperPerms from JitPack
-        maven { url = 'https://jitpack.io' }
-    }
 }
 
 dependencies {
     // Hytale Server API — resolved automatically from maven.hytale.com
     compileOnly "com.hypixel.hytale:Server:${hytaleVersion}"
 
-    // HyperPerms soft dependency (for compile-time reference only)
+    // HyperPerms soft dependency — accessed via reflection at runtime only
+    // In monorepo context, include for IDE autocompletion
     if (isMonorepo) {
         compileOnly project(':HyperPerms')
-    } else {
-        compileOnly 'com.github.HyperSystemsDev:HyperPerms:v2.8.7'
     }
 
     // JSON handling

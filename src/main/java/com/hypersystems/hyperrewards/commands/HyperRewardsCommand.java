@@ -19,6 +19,7 @@ import com.hypersystems.hyperrewards.config.Reward;
 import com.hypersystems.hyperrewards.gui.LeaderboardGui;
 import com.hypersystems.hyperrewards.integration.HyperPermsIntegration;
 import com.hypersystems.hyperrewards.util.ColorUtil;
+import com.hypersystems.hyperrewards.util.PlayerResolver;
 import com.hypersystems.hyperrewards.util.TimeUtil;
 
 import java.util.*;
@@ -298,16 +299,16 @@ public class HyperRewardsCommand extends AbstractPlayerCommand {
                     ctx.sendMessage(ColorUtil.color(HyperRewards.get().getConfigManager().getConfig().messages.noPermission));
                     return;
                 }
-                String targetName = a2;
-                String targetUuid = HyperRewards.get().getService().getUuidByUsername(targetName);
-                if (targetUuid == null) {
-                    ctx.sendMessage(ColorUtil.color("&cPlayer '" + targetName + "' not found."));
+                PlayerResolver.ResolvedPlayer target = PlayerResolver.resolve(
+                        HyperRewards.get().getService(), a2);
+                if (target == null) {
+                    ctx.sendMessage(ColorUtil.color("&cPlayer '" + a2 + "' not found."));
                     return;
                 }
-                long total = HyperRewards.get().getService().getTotalPlaytime(targetUuid);
+                long total = HyperRewards.get().getService().getTotalPlaytime(target.uuid().toString());
                 HyperRewardsConfig cfg = HyperRewards.get().getConfigManager().getConfig();
                 String msg = cfg.messages.otherCheck
-                        .replace("%player%", targetName)
+                        .replace("%player%", target.username())
                         .replace("%time%", TimeUtil.format(total));
                 ctx.sendMessage(ColorUtil.color(msg));
                 return;

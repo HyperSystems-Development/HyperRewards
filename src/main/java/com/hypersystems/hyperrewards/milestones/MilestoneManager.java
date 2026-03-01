@@ -92,7 +92,7 @@ public class MilestoneManager {
                     .replace("%player%", username)
                     .replace("%time%", timeFormatted)
                     .replace("%milestone%", milestone.id);
-            Universe.get().sendMessage(player.getUuid(), ColorUtil.color(msg));
+            player.sendMessage(ColorUtil.color(msg));
         }
 
         // 6. Broadcast announcement

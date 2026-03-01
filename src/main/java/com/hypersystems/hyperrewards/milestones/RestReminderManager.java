@@ -61,7 +61,7 @@ public class RestReminderManager {
                     .replace("%session_time%", sessionFormatted)
                     .replace("%player%", player.getUsername());
 
-            Universe.get().sendMessage(uuid, ColorUtil.color(msg));
+            player.sendMessage(ColorUtil.color(msg));
             lastReminderTime.put(uuid, now);
         }
     }
