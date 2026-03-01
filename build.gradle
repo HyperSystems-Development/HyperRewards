@@ -77,6 +77,12 @@ dependencies {
 
     // Null safety annotations
     compileOnly 'org.jetbrains:annotations:26.0.1'
+
+    // Testing
+    testImplementation 'org.junit.jupiter:junit-jupiter:5.11.4'
+    testImplementation 'org.junit.jupiter:junit-jupiter-params:5.11.4'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+    testImplementation 'org.mockito:mockito-core:5.15.2'
 }
 
 // ---------------------------------------------------------------------------
@@ -142,6 +148,10 @@ shadowJar {
 
 build {
     dependsOn shadowJar
+}
+
+test {
+    useJUnitPlatform()
 }
 
 // ---------------------------------------------------------------------------
