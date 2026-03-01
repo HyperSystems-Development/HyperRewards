@@ -1,8 +1,5 @@
 package com.hypersystems.hyperrewards.gui;
 
-import com.hypixel.hytale.codec.Codec;
-import com.hypixel.hytale.codec.KeyedCodec;
-import com.hypixel.hytale.codec.builder.BuilderCodec;
 import com.hypixel.hytale.component.Ref;
 import com.hypixel.hytale.component.Store;
 import com.hypixel.hytale.protocol.packets.interface_.CustomPageLifetime;
@@ -20,7 +17,7 @@ import com.hypersystems.hyperrewards.util.TimeUtil;
 import javax.annotation.Nonnull;
 import java.util.Map;
 
-public class LeaderboardGui extends InteractiveCustomUIPage<LeaderboardGui.LeaderboardData> {
+public class LeaderboardGui extends InteractiveCustomUIPage<LeaderboardData> {
 
     private final PlayerRef playerRef;
     private String currentPeriod = "all";
@@ -101,12 +98,5 @@ public class LeaderboardGui extends InteractiveCustomUIPage<LeaderboardGui.Leade
             refreshLeaderboard(cmd);
             this.sendUpdate(cmd);
         }
-    }
-
-    public static class LeaderboardData {
-        public static final BuilderCodec<LeaderboardData> CODEC = BuilderCodec.builder(LeaderboardData.class, LeaderboardData::new)
-                .addField(new KeyedCodec<>("Action", Codec.STRING), (d, s) -> d.action = s, d -> d.action)
-                .build();
-        private String action;
     }
 }
