@@ -1,13 +1,13 @@
 # HyperRewards
 
-[![Latest Release](https://img.shields.io/github/v/release/HyperSystemsDev/HyperRewards?label=version)](https://github.com/HyperSystemsDev/HyperRewards/releases)
+[![Latest Release](https://img.shields.io/github/v/release/HyperSystems-Development/HyperRewards?label=version)](https://github.com/HyperSystems-Development/HyperRewards/releases)
 [![License](https://img.shields.io/badge/license-MIT-green)](LICENSE)
 [![Discord](https://img.shields.io/badge/Discord-Join%20Us-7289DA?logo=discord&logoColor=white)](https://discord.com/invite/aZaa5vcFYh)
-[![GitHub Stars](https://img.shields.io/github/stars/HyperSystemsDev/HyperRewards?style=social)](https://github.com/HyperSystemsDev/HyperRewards)
+[![GitHub Stars](https://img.shields.io/github/stars/HyperSystems-Development/HyperRewards?style=social)](https://github.com/HyperSystems-Development/HyperRewards)
 
 **Advanced playtime tracking with rewards, milestones, leaderboards, and live stats for Hytale servers.** Track every session down to the millisecond, reward your players automatically, and give them reasons to keep coming back.
 
-**[Discord](https://discord.com/invite/aZaa5vcFYh)** | **[Releases](https://github.com/HyperSystemsDev/HyperRewards/releases)** | **[Issues](https://github.com/HyperSystemsDev/HyperRewards/issues)**
+**[Discord](https://discord.com/invite/aZaa5vcFYh)** | **[Releases](https://github.com/HyperSystems-Development/HyperRewards/releases)** | **[Issues](https://github.com/HyperSystems-Development/HyperRewards/issues)**
 
 ## Features
 
@@ -25,7 +25,7 @@
 
 **Crash-Safe Sessions** — Active sessions are saved periodically (~1 minute intervals) so player data survives unexpected server crashes or restarts. No more lost playtime.
 
-**HyperPerms Integration** — Optional deep integration with [HyperPerms](https://github.com/HyperSystemsDev/HyperPerms). Grant permissions, assign groups, and check permission nodes through milestones. Fully reflection-based — runs standalone without HyperPerms installed.
+**HyperPerms Integration** — Optional deep integration with [HyperPerms](https://github.com/HyperSystems-Development/HyperPerms). Grant permissions, assign groups, and check permission nodes through milestones. Fully reflection-based — runs standalone without HyperPerms installed.
 
 **Dual Database** — SQLite out of the box, MySQL for networks. HikariCP connection pooling with automatic retry logic and exponential backoff. Database indexes on all hot query paths.
 
@@ -240,7 +240,7 @@ Set `"topStyle": "gui"` to open the interactive leaderboard GUI when players run
 }
 ```
 
-When [HyperPerms](https://github.com/HyperSystemsDev/HyperPerms) is installed, milestones can grant permissions and assign groups automatically. The integration is reflection-based and fully optional — HyperRewards runs standalone without it.
+When [HyperPerms](https://github.com/HyperSystems-Development/HyperPerms) is installed, milestones can grant permissions and assign groups automatically. The integration is reflection-based and fully optional — HyperRewards runs standalone without it.
 
 Check integration status in-game with `/playtime version`.
 
@@ -295,10 +295,10 @@ Contributors to the original project: [shreyjain14](https://github.com/shreyjain
 ## Links
 
 - [Discord](https://discord.com/invite/aZaa5vcFYh) — Support & community
-- [Issues](https://github.com/HyperSystemsDev/HyperRewards/issues) — Bug reports & feature requests
-- [Releases](https://github.com/HyperSystemsDev/HyperRewards/releases) — Downloads
+- [Issues](https://github.com/HyperSystems-Development/HyperRewards/issues) — Bug reports & feature requests
+- [Releases](https://github.com/HyperSystems-Development/HyperRewards/releases) — Downloads
 - [Original Project](https://github.com/ItsZib/AdvancedPlaytime) — Advanced Playtime by ItsZib
 
 ---
 
-Part of the **HyperSystems** suite: [HyperPerms](https://github.com/HyperSystemsDev/HyperPerms) | [HyperRewards](https://github.com/HyperSystemsDev/HyperRewards) | [HyperHomes](https://github.com/HyperSystemsDev/HyperHomes) | [HyperFactions](https://github.com/HyperSystemsDev/HyperFactions) | [HyperWarp](https://github.com/HyperSystemsDev/HyperWarp)
+Part of the **[HyperSystems](https://github.com/HyperSystems-Development)** suite: [HyperPerms](https://github.com/HyperSystems-Development/HyperPerms) | [HyperRewards](https://github.com/HyperSystems-Development/HyperRewards) | [HyperEssentials](https://github.com/HyperSystems-Development/HyperEssentials) | [HyperFactions](https://github.com/HyperSystems-Development/HyperFactions)

@@ -8,7 +8,7 @@
       "Name": "HyperSystems"
     }
   ],
-  "Website": "https://github.com/HyperSystemsDev/HyperRewards",
+  "Website": "https://github.com/HyperSystems-Development/HyperRewards",
   "Main": "com.hypersystems.hyperrewards.HyperRewards",
   "ServerVersion": "${serverVersion}",
   "Dependencies": {},
