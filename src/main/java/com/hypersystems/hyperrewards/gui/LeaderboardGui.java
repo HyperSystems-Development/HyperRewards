@@ -4,6 +4,7 @@ import com.hypixel.hytale.component.Ref;
 import com.hypixel.hytale.component.Store;
 import com.hypixel.hytale.protocol.packets.interface_.CustomPageLifetime;
 import com.hypixel.hytale.protocol.packets.interface_.CustomUIEventBindingType;
+import com.hypixel.hytale.server.core.entity.entities.Player;
 import com.hypixel.hytale.server.core.entity.entities.player.pages.InteractiveCustomUIPage;
 import com.hypixel.hytale.server.core.ui.builder.EventData;
 import com.hypixel.hytale.server.core.ui.builder.UICommandBuilder;
@@ -19,11 +20,13 @@ import java.util.Map;
 
 public class LeaderboardGui extends InteractiveCustomUIPage<LeaderboardData> {
 
+    private final Player player;
     private final PlayerRef playerRef;
     private String currentPeriod = "all";
 
-    public LeaderboardGui(@Nonnull PlayerRef playerRef) {
+    public LeaderboardGui(@Nonnull Player player, @Nonnull PlayerRef playerRef) {
         super(playerRef, CustomPageLifetime.CanDismiss, LeaderboardData.CODEC);
+        this.player = player;
         this.playerRef = playerRef;
     }
 
@@ -40,11 +43,13 @@ public class LeaderboardGui extends InteractiveCustomUIPage<LeaderboardData> {
         cmd.set("#BtnWeekly.Text", gui.buttonWeekly);
         cmd.set("#BtnMonthly.Text", gui.buttonMonthly);
         cmd.set("#FooterLabel.Text", gui.footerTitle);
+        cmd.set("#BtnBack.Text", gui.backButton);
 
         bindButton(events, "#BtnAll", "all");
         bindButton(events, "#BtnDaily", "daily");
         bindButton(events, "#BtnWeekly", "weekly");
         bindButton(events, "#BtnMonthly", "monthly");
+        bindButton(events, "#BtnBack", "back");
 
         refreshLeaderboard(cmd);
     }
@@ -59,9 +64,16 @@ public class LeaderboardGui extends InteractiveCustomUIPage<LeaderboardData> {
 
         cmd.set("#TitleText.Text", gui.title + " (" + periodName + ")");
 
+        // Active tab state
+        cmd.set("#BtnAll.Disabled", currentPeriod.equals("all"));
+        cmd.set("#BtnDaily.Disabled", currentPeriod.equals("daily"));
+        cmd.set("#BtnWeekly.Disabled", currentPeriod.equals("weekly"));
+        cmd.set("#BtnMonthly.Disabled", currentPeriod.equals("monthly"));
+
         cmd.clear("#ListContainer");
 
         Map<String, Long> top = HyperRewards.get().getService().getTopPlayers(currentPeriod);
+        String myName = playerRef.getUsername();
 
         int index = 0;
         for (Map.Entry<String, Long> entry : top.entrySet()) {
@@ -73,6 +85,22 @@ public class LeaderboardGui extends InteractiveCustomUIPage<LeaderboardData> {
             cmd.set(elementId + " #Name.Text", entry.getKey());
             cmd.set(elementId + " #Time.Text", TimeUtil.format(entry.getValue()));
 
+            // Rank colors for top 3
+            String rankColor = switch (index) {
+                case 0 -> "#00FFFF"; // Cyan
+                case 1 -> "#C0C0C0"; // Silver
+                case 2 -> "#CD7F32"; // Bronze
+                default -> "#ffffff";
+            };
+            cmd.set(elementId + " #Rank.Style.TextColor", rankColor);
+
+            // Highlight current player's row
+            if (entry.getKey().equalsIgnoreCase(myName)) {
+                cmd.set(elementId + " #EntryBg.Background.Color", "#2a4d7a");
+                cmd.set(elementId + " #Name.Style.TextColor", "#5a8bd8");
+                cmd.set(elementId + " #Name.Style.RenderBold", true);
+            }
+
             index++;
         }
 
@@ -81,6 +109,10 @@ public class LeaderboardGui extends InteractiveCustomUIPage<LeaderboardData> {
 
         cmd.set("#SelfRank.Text", myRank > 0 ? gui.rankPrefix + myRank : gui.rankPrefix + "N/A");
         cmd.set("#SelfTime.Text", gui.timePrefix + TimeUtil.format(myTime));
+
+        // Player count
+        Map<String, Long> allPlayers = HyperRewards.get().getService().getTopPlayers(currentPeriod, 1000);
+        cmd.set("#PlayerCount.Text", gui.playerCountLabel + allPlayers.size());
     }
 
     private void bindButton(UIEventBuilder events, String id, String action) {
@@ -93,6 +125,11 @@ public class LeaderboardGui extends InteractiveCustomUIPage<LeaderboardData> {
         super.handleDataEvent(ref, store, data);
 
         if (data.action != null) {
+            if (data.action.equals("back")) {
+                GuiHelper.navigate(player, ref, store, new MainMenuGui(player, playerRef));
+                return;
+            }
+
             this.currentPeriod = data.action;
             UICommandBuilder cmd = new UICommandBuilder();
             refreshLeaderboard(cmd);

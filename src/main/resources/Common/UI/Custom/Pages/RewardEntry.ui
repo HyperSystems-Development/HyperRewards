@@ -1,0 +1,75 @@
+$C = "../Common.ui";
+$S = "../styles.ui";
+Group {
+  Anchor: (Bottom: 4);
+
+  Group #EntryBg {
+    LayoutMode: Left;
+    Background: (Color: #1a2a3a);
+    Anchor: (Full: 0);
+
+    Group #IndicatorBar {
+      Anchor: (Width: 3, Top: 0, Bottom: 0);
+      Background: (Color: #cc4444);
+    }
+
+    Group {
+      FlexWeight: 1;
+      LayoutMode: Top;
+      Padding: (Full: 12);
+
+      Group {
+        LayoutMode: Left;
+        Anchor: (Height: 22);
+
+        Label #RewardName {
+          Text: "reward_name";
+          Style: (FontSize: 14, TextColor: #FFFFFF, RenderBold: true);
+          FlexWeight: 1;
+        }
+
+        Label #StatusBadge {
+          Text: "LOCKED";
+          Style: (FontSize: 12, TextColor: #cc4444, RenderBold: true);
+          Anchor: (Width: 100);
+        }
+      }
+
+      Group {
+        LayoutMode: Left;
+        Anchor: (Height: 18);
+
+        Label #TimeReq {
+          Text: "Requires: 1h";
+          Style: (FontSize: 11, TextColor: #AAAAAA);
+          FlexWeight: 1;
+        }
+
+        Label #PeriodLabel {
+          Text: "daily";
+          Style: (FontSize: 11, TextColor: #888888, RenderItalics: true);
+          Anchor: (Width: 80);
+        }
+      }
+
+      Group { Anchor: (Height: 4); }
+
+      Group {
+        Anchor: (Height: 10);
+
+        ProgressBar #Progress {
+          Value: 0.0;
+          Anchor: (Left: 0, Right: 0, Top: 0, Bottom: 0);
+          Background: (Color: #222222);
+          Bar: (Color: #44aa44);
+        }
+      }
+
+      Label #ProgressText {
+        Text: "0%";
+        Style: (FontSize: 10, TextColor: #AAAAAA);
+        Anchor: (Height: 14);
+      }
+    }
+  }
+}

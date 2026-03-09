@@ -16,6 +16,7 @@ public class HyperRewardsConfig {
     public MilestoneSettings milestones = new MilestoneSettings();
     public RestReminderSettings restReminder = new RestReminderSettings();
     public IntegrationSettings integrations = new IntegrationSettings();
+    public UpdateSettings updates = new UpdateSettings();
 
     public void setDefaults() {
         if (database == null) database = new DatabaseSettings();
@@ -28,6 +29,7 @@ public class HyperRewardsConfig {
         if (milestones.list == null) milestones.list = new ArrayList<>();
         if (restReminder == null) restReminder = new RestReminderSettings();
         if (integrations == null) integrations = new IntegrationSettings();
+        if (updates == null) updates = new UpdateSettings();
 
         if (command.topStyle == null) command.topStyle = "text";
         if (command.aliases == null) command.aliases = Arrays.asList("pt", "play", "time");
@@ -104,6 +106,42 @@ public class HyperRewardsConfig {
         public String footerTitle = "YOUR STATS:";
         public String rankPrefix = "Rank: #";
         public String timePrefix = "Time: ";
+
+        // Main Menu
+        public String mainMenuTitle = "HYPER REWARDS";
+        public String mainMenuSubtitle = "Playtime Tracking & Rewards";
+        public String mainMenuStatsButton = "MY STATS";
+        public String mainMenuRewardsButton = "REWARDS";
+        public String mainMenuMilestonesButton = "MILESTONES";
+        public String mainMenuLeaderboardButton = "LEADERBOARD";
+
+        // Stats Page
+        public String statsTitle = "MY STATS";
+        public String statsTotalLabel = "TOTAL PLAYTIME";
+        public String statsPeriodLabel = "PERIOD PLAYTIME";
+        public String statsSessionLabel = "CURRENT SESSION";
+        public String statsRankLabel = "YOUR RANK";
+
+        // Rewards Page
+        public String rewardsTitle = "REWARDS";
+        public String rewardsClaimed = "CLAIMED";
+        public String rewardsAvailable = "AVAILABLE";
+        public String rewardsLocked = "LOCKED";
+
+        // Milestones Page
+        public String milestonesTitle = "MILESTONES";
+        public String milestoneCompleted = "COMPLETED";
+        public String milestoneReady = "READY";
+        public String milestoneInProgress = "IN PROGRESS";
+
+        // Tab labels
+        public String tabAll = "ALL";
+        public String tabOneTime = "ONE-TIME";
+        public String tabRepeatable = "REPEATABLE";
+
+        // Navigation
+        public String backButton = "< BACK";
+        public String playerCountLabel = "Players tracked: ";
     }
 
     public static class MilestoneSettings {
@@ -118,6 +156,9 @@ public class HyperRewardsConfig {
     }
 
     public static class IntegrationSettings {
-        public boolean hyperPermsEnabled = true;
+    }
+
+    public static class UpdateSettings {
+        public boolean enabled = true;
     }
 }

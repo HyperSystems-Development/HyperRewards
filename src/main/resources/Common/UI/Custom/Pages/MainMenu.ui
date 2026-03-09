@@ -1,0 +1,182 @@
+$C = "../Common.ui";
+$S = "../styles.ui";
+$C.@PageOverlay {
+  $C.@Container {
+    Anchor: (Width: 480, Height: 480);
+
+    #Title {
+      Group {
+        LayoutMode: Top;
+
+        $C.@Title #TitleText {
+          @Text = "HYPER REWARDS";
+        }
+
+        Label #SubtitleText {
+          Text: "Playtime Tracking & Rewards";
+          Style: (FontSize: 12, TextColor: #888888, HorizontalAlignment: Center);
+          Anchor: (Height: 18);
+        }
+      }
+    }
+
+    #Content {
+      LayoutMode: Top;
+      Padding: (Left: 20, Right: 20, Top: 10, Bottom: 15);
+
+      // Section: Your Stats
+      Label #StatsTitle {
+        Text: "Your Stats";
+        Style: (FontSize: 14, TextColor: #888888, RenderBold: true);
+        Anchor: (Height: 22, Bottom: 5);
+      }
+
+      // Stat cards row
+      Group {
+        LayoutMode: Left;
+        Anchor: (Height: 55, Bottom: 8);
+
+        Group {
+          FlexWeight: 1;
+          Padding: (Right: 4);
+
+          Group {
+            Anchor: (Full: 0);
+            Background: (Color: #1a2a3a);
+            LayoutMode: Top;
+            Padding: (Full: 8);
+
+            Label {
+              Text: "TOTAL";
+              Style: (FontSize: 10, TextColor: #888888, RenderUppercase: true);
+              Anchor: (Height: 14);
+            }
+            Label #StatTotal {
+              Text: "0h 0m";
+              Style: (FontSize: 16, TextColor: #00FFFF, RenderBold: true);
+              Anchor: (Height: 22);
+            }
+          }
+        }
+
+        Group {
+          FlexWeight: 1;
+          Padding: (Right: 4);
+
+          Group {
+            Anchor: (Full: 0);
+            Background: (Color: #1a2a3a);
+            LayoutMode: Top;
+            Padding: (Full: 8);
+
+            Label {
+              Text: "SESSION";
+              Style: (FontSize: 10, TextColor: #888888, RenderUppercase: true);
+              Anchor: (Height: 14);
+            }
+            Label #StatSession {
+              Text: "0m";
+              Style: (FontSize: 16, TextColor: #55FF55, RenderBold: true);
+              Anchor: (Height: 22);
+            }
+          }
+        }
+
+        Group {
+          FlexWeight: 1;
+
+          Group {
+            Anchor: (Full: 0);
+            Background: (Color: #1a2a3a);
+            LayoutMode: Top;
+            Padding: (Full: 8);
+
+            Label {
+              Text: "RANK";
+              Style: (FontSize: 10, TextColor: #888888, RenderUppercase: true);
+              Anchor: (Height: 14);
+            }
+            Label #StatRank {
+              Text: "#?";
+              Style: (FontSize: 16, TextColor: #FFD700, RenderBold: true);
+              Anchor: (Height: 22);
+            }
+          }
+        }
+      }
+
+      // Gray separator
+      Group {
+        Anchor: (Height: 1, Bottom: 12);
+        Background: (Color: #444444);
+      }
+
+      // Section: Explore
+      Label #ExploreTitle {
+        Text: "Explore";
+        Style: (FontSize: 14, TextColor: #888888, RenderBold: true);
+        Anchor: (Height: 22, Bottom: 5);
+      }
+
+      // Nav buttons - 2x2 grid
+      Group {
+        LayoutMode: Left;
+        Anchor: (Height: 38, Bottom: 6);
+
+        Group {
+          FlexWeight: 1;
+          Padding: (Right: 3);
+          $C.@SecondaryTextButton #BtnStats {
+            @Text = "MY STATS";
+            Anchor: (Full: 0);
+          }
+        }
+        Group {
+          FlexWeight: 1;
+          Padding: (Left: 3);
+          $C.@SecondaryTextButton #BtnRewards {
+            @Text = "REWARDS";
+            Anchor: (Full: 0);
+          }
+        }
+      }
+
+      Group {
+        LayoutMode: Left;
+        Anchor: (Height: 38);
+
+        Group {
+          FlexWeight: 1;
+          Padding: (Right: 3);
+          $C.@SecondaryTextButton #BtnMilestones {
+            @Text = "MILESTONES";
+            Anchor: (Full: 0);
+          }
+        }
+        Group {
+          FlexWeight: 1;
+          Padding: (Left: 3);
+          $C.@SecondaryTextButton #BtnLeaderboard {
+            @Text = "LEADERBOARD";
+            Anchor: (Full: 0);
+          }
+        }
+      }
+
+      // Spacer
+      Group { FlexWeight: 1; }
+
+      // Admin button (hidden by default, shown for admins)
+      Group #AdminRow {
+        Anchor: (Height: 38);
+        Visible: false;
+
+        $C.@SecondaryTextButton #BtnAdmin {
+          @Text = "ADMIN PANEL";
+          Anchor: (Full: 0);
+        }
+      }
+    }
+  }
+}
+$C.@BackButton {}

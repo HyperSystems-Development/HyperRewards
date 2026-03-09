@@ -1,0 +1,159 @@
+$C = "../Common.ui";
+$S = "../styles.ui";
+$C.@PageOverlay {
+  $C.@Container {
+    Anchor: (Width: 500, Height: 500);
+
+    Group {
+      LayoutMode: Top;
+      Padding: (Full: 15);
+
+      $C.@Title #TitleText {
+        @Text = "MY STATS";
+      }
+
+      $S.@Divider {}
+
+      Group { Anchor: (Height: 10); }
+
+      Group {
+        Anchor: (Height: 65);
+        Background: (Color: #1a2a3a);
+        LayoutMode: Top;
+        Padding: (Full: 12);
+
+        Label #TotalLabel {
+          Text: "TOTAL PLAYTIME";
+          Style: (FontSize: 11, TextColor: #888888, RenderUppercase: true);
+          Anchor: (Height: 16);
+        }
+        Label #TotalTime {
+          Text: "0h 0m";
+          Style: (FontSize: 22, TextColor: #00FFFF, RenderBold: true);
+          Anchor: (Height: 30);
+        }
+      }
+
+      Group { Anchor: (Height: 8); }
+
+      Group {
+        LayoutMode: Left;
+        Anchor: (Height: 40);
+
+        Group {
+          Anchor: (Width: 112);
+          Padding: (Right: 4);
+          $C.@SecondaryTextButton #BtnAll {
+            @Text = "ALL TIME";
+            Anchor: (Full: 0);
+          }
+        }
+        Group {
+          Anchor: (Width: 112);
+          Padding: (Right: 4);
+          $C.@SecondaryTextButton #BtnDaily {
+            @Text = "DAILY";
+            Anchor: (Full: 0);
+          }
+        }
+        Group {
+          Anchor: (Width: 112);
+          Padding: (Right: 4);
+          $C.@SecondaryTextButton #BtnWeekly {
+            @Text = "WEEKLY";
+            Anchor: (Full: 0);
+          }
+        }
+        Group {
+          Anchor: (Width: 112);
+          $C.@SecondaryTextButton #BtnMonthly {
+            @Text = "MONTHLY";
+            Anchor: (Full: 0);
+          }
+        }
+      }
+
+      Group { Anchor: (Height: 8); }
+
+      Group {
+        Anchor: (Height: 65);
+        Background: (Color: #1a2a3a);
+        LayoutMode: Top;
+        Padding: (Full: 12);
+
+        Label #PeriodLabel {
+          Text: "PERIOD PLAYTIME";
+          Style: (FontSize: 11, TextColor: #888888, RenderUppercase: true);
+          Anchor: (Height: 16);
+        }
+        Label #PeriodTime {
+          Text: "0h 0m";
+          Style: (FontSize: 20, TextColor: #FFFFFF, RenderBold: true);
+          Anchor: (Height: 30);
+        }
+      }
+
+      Group { Anchor: (Height: 8); }
+
+      Group {
+        LayoutMode: Left;
+        Anchor: (Height: 65);
+
+        Group {
+          FlexWeight: 1;
+          Padding: (Right: 4);
+
+          Group {
+            Anchor: (Full: 0);
+            Background: (Color: #1a2a3a);
+            LayoutMode: Top;
+            Padding: (Full: 12);
+
+            Label #SessionLabel {
+              Text: "CURRENT SESSION";
+              Style: (FontSize: 11, TextColor: #888888, RenderUppercase: true);
+              Anchor: (Height: 16);
+            }
+            Label #SessionTime {
+              Text: "0m";
+              Style: (FontSize: 18, TextColor: #55FF55, RenderBold: true);
+            }
+          }
+        }
+
+        Group {
+          FlexWeight: 1;
+          Padding: (Left: 4);
+
+          Group {
+            Anchor: (Full: 0);
+            Background: (Color: #1a2a3a);
+            LayoutMode: Top;
+            Padding: (Full: 12);
+
+            Label #RankLabel {
+              Text: "YOUR RANK";
+              Style: (FontSize: 11, TextColor: #888888, RenderUppercase: true);
+              Anchor: (Height: 16);
+            }
+            Label #RankValue {
+              Text: "#?";
+              Style: (FontSize: 18, TextColor: #FFD700, RenderBold: true);
+            }
+          }
+        }
+      }
+
+      Group { Anchor: (Height: 15); }
+
+      Group {
+        Anchor: (Height: 40);
+        $C.@SecondaryTextButton #BtnBack {
+          @Text = "< BACK";
+          Anchor: (Full: 0);
+        }
+      }
+    }
+  }
+}
+$C.@BackButton {}

@@ -1,0 +1,107 @@
+$C = "../Common.ui";
+$S = "../styles.ui";
+$C.@PageOverlay {
+  $C.@Container {
+    Anchor: (Width: 650, Height: 600);
+
+    #Title {
+      $C.@Title #TitleText {
+        @Text = "MANAGE REWARDS";
+      }
+    }
+
+    #Content {
+      LayoutMode: Top;
+      Padding: (Left: 15, Right: 15, Top: 10, Bottom: 10);
+
+      // Tab row
+      Group {
+        LayoutMode: Left;
+        Anchor: (Height: 38);
+
+        Group {
+          Anchor: (Width: 145);
+          Padding: (Right: 4);
+          $C.@SecondaryTextButton #TabAll {
+            @Text = "ALL";
+            Anchor: (Full: 0);
+          }
+        }
+        Group {
+          Anchor: (Width: 145);
+          Padding: (Right: 4);
+          $C.@SecondaryTextButton #TabDaily {
+            @Text = "DAILY";
+            Anchor: (Full: 0);
+          }
+        }
+        Group {
+          Anchor: (Width: 145);
+          Padding: (Right: 4);
+          $C.@SecondaryTextButton #TabWeekly {
+            @Text = "WEEKLY";
+            Anchor: (Full: 0);
+          }
+        }
+        Group {
+          Anchor: (Width: 145);
+          $C.@SecondaryTextButton #TabMonthly {
+            @Text = "MONTHLY";
+            Anchor: (Full: 0);
+          }
+        }
+      }
+
+      // Spacer
+      Group { Anchor: (Height: 6); }
+
+      // Add Reward button
+      Group {
+        Anchor: (Height: 36, Bottom: 6);
+        $C.@SecondaryTextButton #BtnAdd {
+          @Text = "+ ADD REWARD";
+          Anchor: (Full: 0);
+        }
+      }
+
+      // Cyan divider
+      Group {
+        Anchor: (Height: 1, Bottom: 6);
+        Background: (Color: #00AAAA);
+      }
+
+      // Scroll area
+      Group {
+        FlexWeight: 1;
+        LayoutMode: TopScrolling;
+        ScrollbarStyle: $C.@DefaultScrollbarStyle;
+        Background: (Color: #0d1520);
+
+        Group #RewardsList {
+          LayoutMode: Top;
+        }
+      }
+
+      // Empty message
+      Label #EmptyMsg {
+        Text: "No rewards configured.";
+        Visible: false;
+        Style: (FontSize: 14, TextColor: #888888);
+        Anchor: (Height: 30);
+      }
+
+      // Spacer
+      Group { Anchor: (Height: 8); }
+
+      // Back button
+      Group {
+        Anchor: (Height: 38);
+        $C.@SecondaryTextButton #BtnBack {
+          @Text = "< BACK";
+          Anchor: (Full: 0);
+        }
+      }
+    }
+  }
+}
+$C.@BackButton {}

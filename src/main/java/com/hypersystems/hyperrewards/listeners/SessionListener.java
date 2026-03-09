@@ -63,12 +63,14 @@ public class SessionListener {
             long currentDuration = System.currentTimeMillis() - start;
 
             Long previouslySaved = lastSavedDuration.get(uuid);
-            if (previouslySaved != null && (currentDuration - previouslySaved) < 30_000) {
-                continue;
+            long increment = previouslySaved != null ? currentDuration - previouslySaved : currentDuration;
+
+            if (increment < 30_000) {
+                continue; // skip if less than 30 seconds of new time
             }
 
             try {
-                HyperRewards.get().getService().saveSession(uuid.toString(), name, start, currentDuration);
+                HyperRewards.get().getService().saveSession(uuid.toString(), name, start, increment);
                 lastSavedDuration.put(uuid, currentDuration);
             } catch (Exception e) {
                 logger.error("Failed to save active session for {}", name, e);
@@ -96,12 +98,16 @@ public class SessionListener {
         Long start = joinTimes.remove(uuid);
         if (start == null) return;
 
-        long duration = System.currentTimeMillis() - start;
+        long totalDuration = System.currentTimeMillis() - start;
+        Long previouslySaved = lastSavedDuration.get(uuid);
+        long increment = previouslySaved != null ? totalDuration - previouslySaved : totalDuration;
 
-        try {
-            HyperRewards.get().getService().saveSession(uuid.toString(), name, start, duration);
-        } catch (Exception e) {
-            logger.error("Failed to save session for {}", name, e);
+        if (increment > 0) {
+            try {
+                HyperRewards.get().getService().saveSession(uuid.toString(), name, start, increment);
+            } catch (Exception e) {
+                logger.error("Failed to save session for {}", name, e);
+            }
         }
 
         historicalCache.remove(uuid);
@@ -113,6 +119,18 @@ public class SessionListener {
         Long start = joinTimes.get(uuid);
         if (start == null) return 0;
         return System.currentTimeMillis() - start;
+    }
+
+    /**
+     * Returns only the unsaved portion of the current session.
+     * Used by DB queries to avoid double-counting already-saved increments.
+     */
+    public static long getUnsavedSessionTime(UUID uuid) {
+        Long start = joinTimes.get(uuid);
+        if (start == null) return 0;
+        long total = System.currentTimeMillis() - start;
+        Long saved = lastSavedDuration.get(uuid);
+        return saved != null ? total - saved : total;
     }
 
     public static long getLiveTotalTime(UUID uuid) {

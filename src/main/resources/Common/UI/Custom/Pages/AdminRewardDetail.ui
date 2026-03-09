@@ -1,0 +1,196 @@
+$C = "../Common.ui";
+$S = "../styles.ui";
+$C.@PageOverlay {
+  $C.@Container {
+    Anchor: (Width: 600, Height: 580);
+
+    #Title {
+      $C.@Title #TitleText {
+        @Text = "EDIT REWARD";
+      }
+    }
+
+    #Content {
+      LayoutMode: Top;
+      Padding: (Left: 20, Right: 20, Top: 10, Bottom: 10);
+
+      // Scrollable form area
+      Group {
+        FlexWeight: 1;
+        LayoutMode: TopScrolling;
+        ScrollbarStyle: $C.@DefaultScrollbarStyle;
+
+        Group #FormContent {
+          LayoutMode: Top;
+
+          // Reward ID
+          Group {
+            Anchor: (Height: 55, Bottom: 4);
+            LayoutMode: Top;
+
+            Label {
+              Text: "REWARD ID";
+              Style: (FontSize: 11, TextColor: #888888);
+              Anchor: (Height: 16);
+            }
+            $C.@TextField #IdInput {
+              Anchor: (Height: 30, Left: 0, Right: 0);
+            }
+          }
+
+          // Period selector (cycle button)
+          Group {
+            Anchor: (Height: 55, Bottom: 4);
+            LayoutMode: Top;
+
+            Label {
+              Text: "PERIOD";
+              Style: (FontSize: 11, TextColor: #888888);
+              Anchor: (Height: 16);
+            }
+            Group {
+              Anchor: (Height: 30);
+              LayoutMode: Left;
+
+              Group {
+                Anchor: (Width: 130);
+                Padding: (Right: 4);
+                $C.@SecondaryTextButton #PeriodDaily {
+                  @Text = "Daily";
+                  Anchor: (Full: 0);
+                }
+              }
+              Group {
+                Anchor: (Width: 130);
+                Padding: (Right: 4);
+                $C.@SecondaryTextButton #PeriodWeekly {
+                  @Text = "Weekly";
+                  Anchor: (Full: 0);
+                }
+              }
+              Group {
+                Anchor: (Width: 130);
+                Padding: (Right: 4);
+                $C.@SecondaryTextButton #PeriodMonthly {
+                  @Text = "Monthly";
+                  Anchor: (Full: 0);
+                }
+              }
+              Group {
+                Anchor: (Width: 130);
+                $C.@SecondaryTextButton #PeriodAll {
+                  @Text = "All Time";
+                  Anchor: (Full: 0);
+                }
+              }
+            }
+          }
+
+          // Time (minutes)
+          Group {
+            Anchor: (Height: 55, Bottom: 4);
+            LayoutMode: Top;
+
+            Label {
+              Text: "TIME REQUIRED (MINUTES)";
+              Style: (FontSize: 11, TextColor: #888888);
+              Anchor: (Height: 16);
+            }
+            $C.@TextField #TimeInput {
+              Anchor: (Height: 30, Left: 0, Right: 0);
+            }
+          }
+
+          // Repeatable
+          Group {
+            Anchor: (Height: 30, Bottom: 8);
+            $C.@CheckBoxWithLabel #RepeatableCheck {
+              @Text = "Repeatable";
+              Anchor: (Full: 0);
+            }
+          }
+
+          // Broadcast message
+          Group {
+            Anchor: (Height: 55, Bottom: 4);
+            LayoutMode: Top;
+
+            Label {
+              Text: "BROADCAST MESSAGE";
+              Style: (FontSize: 11, TextColor: #888888);
+              Anchor: (Height: 16);
+            }
+            $C.@TextField #BroadcastInput {
+              Anchor: (Height: 30, Left: 0, Right: 0);
+            }
+          }
+
+          // Cyan divider
+          Group {
+            Anchor: (Height: 1, Bottom: 8);
+            Background: (Color: #00AAAA);
+          }
+
+          // Commands section header
+          Label {
+            Text: "COMMANDS";
+            Style: (FontSize: 14, TextColor: #888888, RenderBold: true);
+            Anchor: (Height: 22);
+          }
+
+          // Commands list
+          Group #CommandsList {
+            LayoutMode: Top;
+          }
+
+          // Add command row
+          Group {
+            Anchor: (Height: 36);
+            LayoutMode: Left;
+
+            Group {
+              FlexWeight: 1;
+              Padding: (Right: 4);
+              $C.@TextField #NewCmdInput {
+                Anchor: (Height: 30, Left: 0, Right: 0);
+              }
+            }
+            Group {
+              Anchor: (Width: 80);
+              $C.@SecondaryTextButton #BtnAddCmd {
+                @Text = "+ Add";
+                Anchor: (Height: 30, Left: 0, Right: 0);
+              }
+            }
+          }
+        }
+      }
+
+      // Spacer
+      Group { Anchor: (Height: 8); }
+
+      // Button row
+      Group {
+        Anchor: (Height: 38);
+        LayoutMode: Left;
+
+        Group {
+          FlexWeight: 1;
+          Padding: (Right: 4);
+          $C.@SecondaryTextButton #BtnSave {
+            @Text = "Save";
+            Anchor: (Full: 0);
+          }
+        }
+        Group {
+          FlexWeight: 1;
+          $C.@SecondaryTextButton #BtnCancel {
+            @Text = "Cancel";
+            Anchor: (Full: 0);
+          }
+        }
+      }
+    }
+  }
+}
+$C.@BackButton {}

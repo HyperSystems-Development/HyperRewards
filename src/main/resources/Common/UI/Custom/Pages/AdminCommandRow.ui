@@ -1,0 +1,18 @@
+$C = "../Common.ui";
+Group {
+  Anchor: (Height: 28, Bottom: 3);
+  LayoutMode: Left;
+  Background: (Color: #0d1520);
+  Padding: (Left: 8, Right: 4);
+
+  Label #CmdText {
+    Text: "command";
+    Style: (FontSize: 11, TextColor: #AAAAAA, VerticalAlignment: Center);
+    FlexWeight: 1;
+  }
+
+  $C.@SecondaryTextButton #CmdDelete {
+    @Text = "X";
+    Anchor: (Width: 28, Height: 22);
+  }
+}

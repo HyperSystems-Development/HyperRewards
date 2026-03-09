@@ -1,0 +1,93 @@
+$C = "../Common.ui";
+$S = "../styles.ui";
+$C.@PageOverlay {
+  $C.@Container {
+    Anchor: (Width: 650, Height: 600);
+
+    #Title {
+      Group {
+        $C.@Title #TitleText {
+          @Text = "MANAGE MILESTONES";
+        }
+      }
+    }
+
+    #Content {
+      LayoutMode: Top;
+      Padding: (Left: 20, Right: 20, Top: 10, Bottom: 15);
+
+      // Tab row
+      Group {
+        LayoutMode: Left;
+        Anchor: (Height: 40, Bottom: 4);
+
+        Group {
+          Anchor: (Width: 180);
+          Padding: (Right: 4);
+          $C.@SecondaryTextButton #TabAll {
+            @Text = "ALL";
+            Anchor: (Full: 0);
+          }
+        }
+        Group {
+          Anchor: (Width: 180);
+          Padding: (Right: 4);
+          $C.@SecondaryTextButton #TabOneTime {
+            @Text = "ONE-TIME";
+            Anchor: (Full: 0);
+          }
+        }
+        Group {
+          Anchor: (Width: 180);
+          $C.@SecondaryTextButton #TabRepeatable {
+            @Text = "REPEATABLE";
+            Anchor: (Full: 0);
+          }
+        }
+      }
+
+      // Add button
+      Group {
+        Anchor: (Height: 36, Bottom: 6);
+        $C.@SecondaryTextButton #BtnAdd {
+          @Text = "+ ADD MILESTONE";
+          Anchor: (Full: 0);
+        }
+      }
+
+      // Cyan divider
+      $S.@Divider {}
+
+      // Scroll area
+      Group {
+        FlexWeight: 1;
+        LayoutMode: TopScrolling;
+        ScrollbarStyle: $C.@DefaultScrollbarStyle;
+        Background: (Color: #0d1520);
+
+        Group #MilestonesList {
+          LayoutMode: Top;
+        }
+      }
+
+      Label #EmptyMsg {
+        Text: "No milestones configured.";
+        Visible: false;
+        Style: (FontSize: 14, TextColor: #888888);
+        Anchor: (Height: 30);
+      }
+
+      Group { Anchor: (Height: 8); }
+
+      // Back button
+      Group {
+        Anchor: (Height: 40);
+        $C.@SecondaryTextButton #BtnBack {
+          @Text = "< BACK";
+          Anchor: (Full: 0);
+        }
+      }
+    }
+  }
+}
+$C.@BackButton {}

@@ -2,12 +2,17 @@ package com.hypersystems.hyperrewards.config;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonArray;
+import com.google.gson.reflect.TypeToken;
 import com.hypersystems.hyperrewards.HyperRewards;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.*;
+import java.lang.reflect.Type;
 import java.nio.file.Files;
+import java.util.List;
 
 public class ConfigManager {
 
@@ -118,6 +123,53 @@ public class ConfigManager {
             gson.toJson(config, writer);
         } catch (IOException e) {
             logger.error("Failed to save config.json", e);
+        }
+    }
+
+    /**
+     * Applies a template by name, loading rewards and milestones from the templates/ resource folder.
+     * Replaces existing rewards and milestones with the template data.
+     *
+     * @param templateName the template name (e.g. "default")
+     * @return a result message describing what was applied, or an error message
+     */
+    public String applyTemplate(String templateName) {
+        String resourcePath = "/templates/" + templateName + ".json";
+        try (InputStream in = HyperRewards.class.getResourceAsStream(resourcePath);
+             Reader reader = new InputStreamReader(in)) {
+
+            JsonObject template = gson.fromJson(reader, JsonObject.class);
+            if (template == null) {
+                return "Template '" + templateName + "' is empty.";
+            }
+
+            int rewardsCount = 0;
+            int milestonesCount = 0;
+
+            if (template.has("rewards")) {
+                JsonArray rewardsArray = template.getAsJsonArray("rewards");
+                Type rewardListType = new TypeToken<List<Reward>>(){}.getType();
+                List<Reward> templateRewards = gson.fromJson(rewardsArray, rewardListType);
+                config.rewards = templateRewards;
+                rewardsCount = templateRewards.size();
+            }
+
+            if (template.has("milestones")) {
+                JsonArray milestonesArray = template.getAsJsonArray("milestones");
+                Type milestoneListType = new TypeToken<List<Milestone>>(){}.getType();
+                List<Milestone> templateMilestones = gson.fromJson(milestonesArray, milestoneListType);
+                config.milestones.list = templateMilestones;
+                milestonesCount = templateMilestones.size();
+            }
+
+            save();
+            return "Applied '" + templateName + "' template: " + rewardsCount + " rewards and " + milestonesCount + " milestones loaded.";
+
+        } catch (NullPointerException e) {
+            return "Template '" + templateName + "' not found.";
+        } catch (Exception e) {
+            logger.error("Failed to apply template: " + templateName, e);
+            return "Failed to apply template. Check console for errors.";
         }
     }
 

@@ -1,0 +1,220 @@
+$C = "../Common.ui";
+$S = "../styles.ui";
+$C.@PageOverlay {
+  $C.@Container {
+    Anchor: (Width: 600, Height: 620);
+
+    #Title {
+      Group {
+        $C.@Title #TitleText {
+          @Text = "EDIT MILESTONE";
+        }
+      }
+    }
+
+    #Content {
+      LayoutMode: TopScrolling;
+      ScrollbarStyle: $C.@DefaultScrollbarStyle;
+      Padding: (Left: 20, Right: 20, Top: 10, Bottom: 10);
+
+      // Milestone ID
+      Group {
+        Anchor: (Height: 50, Bottom: 6);
+        LayoutMode: Top;
+
+        Label {
+          Text: "MILESTONE ID";
+          Style: (FontSize: 11, TextColor: #888888);
+          Anchor: (Height: 16);
+        }
+        $C.@TextField #IdInput {
+          Anchor: (Height: 30, Left: 0, Right: 0);
+        }
+      }
+
+      // Period
+      Group {
+        Anchor: (Height: 50, Bottom: 6);
+        LayoutMode: Top;
+
+        Label {
+          Text: "PERIOD";
+          Style: (FontSize: 11, TextColor: #888888);
+          Anchor: (Height: 16);
+        }
+        DropdownBox #PeriodDropdown {
+          Anchor: (Height: 30, Left: 0, Right: 0);
+          DropdownEntry { Value: "all"; Text: "All Time"; }
+          DropdownEntry { Value: "daily"; Text: "Daily"; }
+          DropdownEntry { Value: "weekly"; Text: "Weekly"; }
+          DropdownEntry { Value: "monthly"; Text: "Monthly"; }
+        }
+      }
+
+      // Time (minutes)
+      Group {
+        Anchor: (Height: 50, Bottom: 6);
+        LayoutMode: Top;
+
+        Label {
+          Text: "TIME (MINUTES)";
+          Style: (FontSize: 11, TextColor: #888888);
+          Anchor: (Height: 16);
+        }
+        $C.@TextField #TimeInput {
+          Anchor: (Height: 30, Left: 0, Right: 0);
+        }
+      }
+
+      // Repeatable checkbox
+      Group {
+        Anchor: (Height: 30, Bottom: 6);
+        $C.@CheckBoxWithLabel #RepeatableCheck {
+          @Text = "Repeatable";
+          Anchor: (Full: 0);
+        }
+      }
+
+      // Group Assignment
+      Group {
+        Anchor: (Height: 50, Bottom: 6);
+        LayoutMode: Top;
+
+        Label {
+          Text: "GROUP ASSIGNMENT";
+          Style: (FontSize: 11, TextColor: #888888);
+          Anchor: (Height: 16);
+        }
+        $C.@TextField #GroupInput {
+          Anchor: (Height: 30, Left: 0, Right: 0);
+        }
+      }
+
+      // Broadcast Message
+      Group {
+        Anchor: (Height: 50, Bottom: 6);
+        LayoutMode: Top;
+
+        Label {
+          Text: "BROADCAST MESSAGE";
+          Style: (FontSize: 11, TextColor: #888888);
+          Anchor: (Height: 16);
+        }
+        $C.@TextField #BroadcastInput {
+          Anchor: (Height: 30, Left: 0, Right: 0);
+        }
+      }
+
+      // Private Message
+      Group {
+        Anchor: (Height: 50, Bottom: 8);
+        LayoutMode: Top;
+
+        Label {
+          Text: "PRIVATE MESSAGE";
+          Style: (FontSize: 11, TextColor: #888888);
+          Anchor: (Height: 16);
+        }
+        $C.@TextField #PrivateInput {
+          Anchor: (Height: 30, Left: 0, Right: 0);
+        }
+      }
+
+      // Cyan divider
+      $S.@Divider {}
+
+      // Permissions section
+      Label {
+        Text: "PERMISSIONS";
+        Style: (FontSize: 14, TextColor: #888888, RenderBold: true);
+        Anchor: (Height: 22, Bottom: 5);
+      }
+
+      Group #PermsList {
+        LayoutMode: Top;
+      }
+
+      // Add permission row
+      Group {
+        Anchor: (Height: 32, Bottom: 8);
+        LayoutMode: Left;
+
+        Group {
+          FlexWeight: 1;
+          Padding: (Right: 4);
+          $C.@TextField #NewPermInput {
+            Anchor: (Height: 30, Left: 0, Right: 0);
+          }
+        }
+        Group {
+          Anchor: (Width: 70);
+          $C.@SecondaryTextButton #BtnAddPerm {
+            @Text = "+ Add";
+            Anchor: (Full: 0);
+          }
+        }
+      }
+
+      // Cyan divider
+      $S.@Divider {}
+
+      // Commands section
+      Label {
+        Text: "COMMANDS";
+        Style: (FontSize: 14, TextColor: #888888, RenderBold: true);
+        Anchor: (Height: 22, Bottom: 5);
+      }
+
+      Group #CommandsList {
+        LayoutMode: Top;
+      }
+
+      // Add command row
+      Group {
+        Anchor: (Height: 32, Bottom: 8);
+        LayoutMode: Left;
+
+        Group {
+          FlexWeight: 1;
+          Padding: (Right: 4);
+          $C.@TextField #NewCmdInput {
+            Anchor: (Height: 30, Left: 0, Right: 0);
+          }
+        }
+        Group {
+          Anchor: (Width: 70);
+          $C.@SecondaryTextButton #BtnAddCmd {
+            @Text = "+ Add";
+            Anchor: (Full: 0);
+          }
+        }
+      }
+
+      // Spacer
+      Group { FlexWeight: 1; }
+
+      // Save + Cancel buttons row
+      Group {
+        Anchor: (Height: 38);
+        LayoutMode: Left;
+
+        Group {
+          FlexWeight: 1;
+          Padding: (Right: 4);
+          $C.@SecondaryTextButton #BtnSave {
+            @Text = "SAVE";
+            Anchor: (Full: 0);
+          }
+        }
+        Group {
+          FlexWeight: 1;
+          $C.@SecondaryTextButton #BtnCancel {
+            @Text = "CANCEL";
+            Anchor: (Full: 0);
+          }
+        }
+      }
+    }
+  }
+}
+$C.@BackButton {}

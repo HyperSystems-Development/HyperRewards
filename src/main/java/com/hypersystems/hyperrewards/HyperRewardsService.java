@@ -59,7 +59,7 @@ public class HyperRewardsService {
         } catch (SQLException e) { logger.error("Failed to get playtime for {}", uuid, e); }
 
         try {
-            dbTime += SessionListener.getCurrentSession(UUID.fromString(uuid));
+            dbTime += SessionListener.getUnsavedSessionTime(UUID.fromString(uuid));
         } catch (Exception e) { logger.warn("Failed to get current session for {}", uuid, e); }
 
         return dbTime;
@@ -101,7 +101,7 @@ public class HyperRewardsService {
                 long total = rs.getLong("total");
 
                 try {
-                    total += SessionListener.getCurrentSession(UUID.fromString(uuid));
+                    total += SessionListener.getUnsavedSessionTime(UUID.fromString(uuid));
                 } catch (Exception ignored) {}
 
                 tempMap.put(name, total);

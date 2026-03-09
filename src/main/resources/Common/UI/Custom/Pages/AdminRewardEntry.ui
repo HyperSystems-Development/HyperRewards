@@ -1,0 +1,89 @@
+$C = "../Common.ui";
+$S = "../styles.ui";
+Group {
+  Anchor: (Bottom: 4);
+
+  Group #EntryBg {
+    LayoutMode: Left;
+    Background: (Color: #1a2a3a);
+    Anchor: (Full: 0);
+
+    Group #IndicatorBar {
+      Anchor: (Width: 3, Top: 0, Bottom: 0);
+      Background: (Color: #00AAAA);
+    }
+
+    Group {
+      FlexWeight: 1;
+      LayoutMode: Top;
+      Padding: (Full: 10);
+
+      // Row 1: ID, period, repeat badge
+      Group {
+        LayoutMode: Left;
+        Anchor: (Height: 20);
+
+        Label #RewardId {
+          Text: "reward_id";
+          Style: (FontSize: 14, TextColor: #FFFFFF, RenderBold: true);
+          FlexWeight: 1;
+        }
+
+        Label #PeriodLabel {
+          Text: "daily";
+          Style: (FontSize: 11, TextColor: #888888, RenderItalics: true);
+          Anchor: (Width: 80);
+        }
+
+        Label #RepeatBadge {
+          Text: "one-time";
+          Style: (FontSize: 10, TextColor: #00AAAA);
+          Anchor: (Width: 80);
+        }
+      }
+
+      // Row 2: Time requirement, command count
+      Group {
+        LayoutMode: Left;
+        Anchor: (Height: 18);
+
+        Label #TimeReq {
+          Text: "Requires: 1h 0m";
+          Style: (FontSize: 11, TextColor: #AAAAAA);
+          FlexWeight: 1;
+        }
+
+        Label #CmdCount {
+          Text: "0 command(s)";
+          Style: (FontSize: 11, TextColor: #888888);
+          Anchor: (Width: 100);
+        }
+      }
+
+      // Spacer
+      Group { Anchor: (Height: 6); }
+
+      // Row 3: Edit / Delete buttons
+      Group {
+        LayoutMode: Left;
+        Anchor: (Height: 30);
+
+        Group {
+          FlexWeight: 1;
+          Padding: (Right: 4);
+          $C.@SecondaryTextButton #BtnEdit {
+            @Text = "Edit";
+            Anchor: (Full: 0);
+          }
+        }
+        Group {
+          FlexWeight: 1;
+          $C.@SecondaryTextButton #BtnDelete {
+            @Text = "Delete";
+            Anchor: (Full: 0);
+          }
+        }
+      }
+    }
+  }
+}

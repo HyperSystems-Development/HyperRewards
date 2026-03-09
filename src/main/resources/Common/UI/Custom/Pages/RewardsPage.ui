@@ -1,0 +1,90 @@
+$C = "../Common.ui";
+$S = "../styles.ui";
+$C.@PageOverlay {
+  $C.@Container {
+    Anchor: (Width: 600, Height: 600);
+
+    Group {
+      LayoutMode: Top;
+      Padding: (Full: 15);
+
+      $C.@Title #TitleText {
+        @Text = "REWARDS";
+      }
+
+      $S.@Divider {}
+
+      Group { Anchor: (Height: 8); }
+
+      Group {
+        LayoutMode: Left;
+        Anchor: (Height: 40);
+
+        Group {
+          Anchor: (Width: 135);
+          Padding: (Right: 4);
+          $C.@SecondaryTextButton #TabAll {
+            @Text = "ALL";
+            Anchor: (Full: 0);
+          }
+        }
+        Group {
+          Anchor: (Width: 135);
+          Padding: (Right: 4);
+          $C.@SecondaryTextButton #TabDaily {
+            @Text = "DAILY";
+            Anchor: (Full: 0);
+          }
+        }
+        Group {
+          Anchor: (Width: 135);
+          Padding: (Right: 4);
+          $C.@SecondaryTextButton #TabWeekly {
+            @Text = "WEEKLY";
+            Anchor: (Full: 0);
+          }
+        }
+        Group {
+          Anchor: (Width: 135);
+          $C.@SecondaryTextButton #TabMonthly {
+            @Text = "MONTHLY";
+            Anchor: (Full: 0);
+          }
+        }
+      }
+
+      $S.@Divider {}
+
+      Group { Anchor: (Height: 8); }
+
+      Group {
+        FlexWeight: 1;
+        LayoutMode: TopScrolling;
+        ScrollbarStyle: $C.@DefaultScrollbarStyle;
+        Background: (Color: #0d1520);
+
+        Group #RewardsList {
+          LayoutMode: Top;
+        }
+      }
+
+      Label #EmptyMsg {
+        Text: "No rewards configured.";
+        Visible: false;
+        Style: (FontSize: 14, TextColor: #888888);
+        Anchor: (Height: 30);
+      }
+
+      Group { Anchor: (Height: 8); }
+
+      Group {
+        Anchor: (Height: 40);
+        $C.@SecondaryTextButton #BtnBack {
+          @Text = "< BACK";
+          Anchor: (Full: 0);
+        }
+      }
+    }
+  }
+}
+$C.@BackButton {}

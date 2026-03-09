@@ -16,8 +16,11 @@ import com.hypersystems.hyperrewards.api.HyperRewardsAPI;
 import com.hypersystems.hyperrewards.config.Milestone;
 import com.hypersystems.hyperrewards.config.HyperRewardsConfig;
 import com.hypersystems.hyperrewards.config.Reward;
+import com.hypersystems.hyperrewards.gui.AdminDashboardGui;
 import com.hypersystems.hyperrewards.gui.LeaderboardGui;
+import com.hypersystems.hyperrewards.gui.MainMenuGui;
 import com.hypersystems.hyperrewards.integration.HyperPermsIntegration;
+import com.hypersystems.hyperrewards.update.UpdateChecker;
 import com.hypersystems.hyperrewards.util.ColorUtil;
 import com.hypersystems.hyperrewards.util.PlayerResolver;
 import com.hypersystems.hyperrewards.util.TimeUtil;
@@ -129,12 +132,35 @@ public class HyperRewardsCommand extends AbstractPlayerCommand {
                 listUserRewards(ctx, player, config);
                 return;
             }
+            if (arg.equalsIgnoreCase("update")) {
+                if (!ctx.sender().hasPermission("playtime.admin")) {
+                    ctx.sendMessage(ColorUtil.color(config.messages.noPermission));
+                    return;
+                }
+                handleUpdateCheck(ctx);
+                return;
+            }
+            if (arg.equalsIgnoreCase("template")) {
+                if (!ctx.sender().hasPermission("playtime.admin")) {
+                    ctx.sendMessage(ColorUtil.color(config.messages.noPermission));
+                    return;
+                }
+                ctx.sendMessage(ColorUtil.color("&6--- HyperRewards Templates ---"));
+                ctx.sendMessage(ColorUtil.color("&eTemplates let you load pre-configured rewards and milestones."));
+                ctx.sendMessage(ColorUtil.color("&7Available templates:"));
+                ctx.sendMessage(ColorUtil.color("  &fdefault &7- Factions/PvP progression with rank-ups, daily/weekly/monthly rewards"));
+                ctx.sendMessage(ColorUtil.color("&7Usage: &e/playtime template <name>"));
+                ctx.sendMessage(ColorUtil.color("&cWarning: This will replace your current rewards and milestones!"));
+                return;
+            }
             if (arg.equalsIgnoreCase("admin")) {
                 if (!ctx.sender().hasPermission("playtime.admin")) {
                     ctx.sendMessage(ColorUtil.color(config.messages.noPermission));
                     return;
                 }
-                showAdminGuide(ctx);
+                if (ctx.sender() instanceof Player senderPlayer) {
+                    senderPlayer.getPageManager().openCustomPage(ref, store, new AdminDashboardGui(senderPlayer, player));
+                }
                 return;
             }
             if (arg.equalsIgnoreCase("menu") || arg.equalsIgnoreCase("gui")) {
@@ -143,7 +169,7 @@ public class HyperRewardsCommand extends AbstractPlayerCommand {
                     return;
                 }
                 if (ctx.sender() instanceof Player senderPlayer) {
-                    senderPlayer.getPageManager().openCustomPage(ref, store, new LeaderboardGui(player));
+                    senderPlayer.getPageManager().openCustomPage(ref, store, new MainMenuGui(senderPlayer, player));
                 }
                 return;
             }
@@ -164,7 +190,7 @@ public class HyperRewardsCommand extends AbstractPlayerCommand {
             if (arg.equalsIgnoreCase("top")) {
                 if (config.command.topStyle.equalsIgnoreCase("gui")) {
                     if (ctx.sender() instanceof Player senderPlayer) {
-                        senderPlayer.getPageManager().openCustomPage(ref, store, new LeaderboardGui(player));
+                        senderPlayer.getPageManager().openCustomPage(ref, store, new LeaderboardGui(senderPlayer, player));
                     }
                 } else {
                     showTop(ctx, player, periods.all);
@@ -183,6 +209,7 @@ public class HyperRewardsCommand extends AbstractPlayerCommand {
         private void showHelp(CommandContext ctx) {
             ctx.sendMessage(ColorUtil.color("&6--- HyperRewards Help ---"));
             ctx.sendMessage(ColorUtil.color("&e/playtime &7- Check your playtime"));
+            ctx.sendMessage(ColorUtil.color("&e/playtime menu &7- Open the GUI menu"));
             ctx.sendMessage(ColorUtil.color("&e/playtime rewards &7- List your rewards"));
             ctx.sendMessage(ColorUtil.color("&e/playtime check <player> &7- View another player's playtime"));
             ctx.sendMessage(ColorUtil.color("&e/playtime milestones &7- View milestones progress"));
@@ -190,7 +217,11 @@ public class HyperRewardsCommand extends AbstractPlayerCommand {
             ctx.sendMessage(ColorUtil.color("&e/playtime version &7- Show plugin version info"));
             if (ctx.sender().hasPermission("playtime.admin")) {
                 ctx.sendMessage(ColorUtil.color("&c--- Admin ---"));
-                ctx.sendMessage(ColorUtil.color("&c/playtime admin &7- Show reward creation guide"));
+                ctx.sendMessage(ColorUtil.color("&c/playtime admin &7- Open admin panel"));
+                ctx.sendMessage(ColorUtil.color("&c/playtime update &7- Check for plugin updates"));
+                ctx.sendMessage(ColorUtil.color("&c/playtime update confirm &7- Download the latest update"));
+                ctx.sendMessage(ColorUtil.color("&c/playtime template &7- View available templates"));
+                ctx.sendMessage(ColorUtil.color("&c/playtime template <name> &7- Apply a reward/milestone template"));
                 ctx.sendMessage(ColorUtil.color("&c/playtime admin listRewards &7- List configured rewards"));
                 ctx.sendMessage(ColorUtil.color("&c/playtime admin listMilestones &7- List configured milestones"));
                 ctx.sendMessage(ColorUtil.color("&c/playtime admin addReward <id> <period> <time> &7- Add a new reward"));
@@ -250,6 +281,37 @@ public class HyperRewardsCommand extends AbstractPlayerCommand {
             ctx.sendMessage(ColorUtil.color("&7Then edit &fconfig.json &7to set the reward command under &frewards > commands"));
         }
 
+        private void handleUpdateCheck(CommandContext ctx) {
+            UpdateChecker checker = HyperRewards.get().getUpdateChecker();
+            if (checker == null) {
+                ctx.sendMessage(ColorUtil.color("&cUpdate checking is disabled in config."));
+                return;
+            }
+
+            ctx.sendMessage(ColorUtil.color("&6[HyperRewards] &7Checking for updates..."));
+
+            checker.checkForUpdates(true).thenAccept(info -> {
+                if (info != null) {
+                    ctx.sendMessage(ColorUtil.color("&6[HyperRewards] &eA new version is available!"));
+                    ctx.sendMessage(ColorUtil.color("&7Current: &fv" + checker.getCurrentVersion()
+                            + " &7-> Latest: &av" + info.version()));
+                    if (info.changelog() != null && !info.changelog().isEmpty()) {
+                        String summary = info.changelog()
+                                .replaceAll("#+\\s*", "").replaceAll("\\*+", "")
+                                .replaceAll("\\n+", " ").replaceAll("\\s+", " ").trim();
+                        if (summary.length() > 150) summary = summary.substring(0, 147) + "...";
+                        ctx.sendMessage(ColorUtil.color("&7Changelog: &f" + summary));
+                    }
+                    ctx.sendMessage(ColorUtil.color("&7Run &e/playtime update confirm &7to download it."));
+                } else {
+                    ctx.sendMessage(ColorUtil.color("&a[HyperRewards] &fPlugin is up-to-date (v" + checker.getCurrentVersion() + ")"));
+                }
+            }).exceptionally(e -> {
+                ctx.sendMessage(ColorUtil.color("&c[HyperRewards] Failed to check for updates: " + e.getMessage()));
+                return null;
+            });
+        }
+
         private void listUserRewards(CommandContext ctx, PlayerRef player, HyperRewardsConfig cfg) {
             ctx.sendMessage(ColorUtil.color(cfg.messages.rewardListHeader));
 
@@ -293,6 +355,50 @@ public class HyperRewardsCommand extends AbstractPlayerCommand {
         protected void execute(CommandContext ctx, Store<EntityStore> store, Ref<EntityStore> ref, PlayerRef player, World world) {
             String a1 = ctx.get(arg1);
             String a2 = ctx.get(arg2);
+
+            if (a1.equalsIgnoreCase("update") && a2.equalsIgnoreCase("confirm")) {
+                if (!ctx.sender().hasPermission("playtime.admin")) {
+                    ctx.sendMessage(ColorUtil.color(HyperRewards.get().getConfigManager().getConfig().messages.noPermission));
+                    return;
+                }
+                UpdateChecker checker = HyperRewards.get().getUpdateChecker();
+                if (checker == null) {
+                    ctx.sendMessage(ColorUtil.color("&cUpdate checking is disabled in config."));
+                    return;
+                }
+                UpdateChecker.UpdateInfo info = checker.getCachedUpdate();
+                if (info == null) {
+                    ctx.sendMessage(ColorUtil.color("&7No update available. Run &e/playtime update &7to check first."));
+                    return;
+                }
+                if (info.downloadUrl() == null || info.downloadUrl().isEmpty()) {
+                    ctx.sendMessage(ColorUtil.color("&cNo download URL available for this release."));
+                    return;
+                }
+                ctx.sendMessage(ColorUtil.color("&6[HyperRewards] &eDownloading v" + info.version() + "..."));
+                checker.downloadUpdate(info).thenAccept(path -> {
+                    if (path != null) {
+                        ctx.sendMessage(ColorUtil.color("&a[HyperRewards] &fUpdate downloaded successfully!"));
+                        ctx.sendMessage(ColorUtil.color("&6Restart the server to apply the update."));
+                    } else {
+                        ctx.sendMessage(ColorUtil.color("&c[HyperRewards] Failed to download update. Check console."));
+                    }
+                }).exceptionally(e -> {
+                    ctx.sendMessage(ColorUtil.color("&c[HyperRewards] Download failed: " + e.getMessage()));
+                    return null;
+                });
+                return;
+            }
+
+            if (a1.equalsIgnoreCase("template")) {
+                if (!ctx.sender().hasPermission("playtime.admin")) {
+                    ctx.sendMessage(ColorUtil.color(HyperRewards.get().getConfigManager().getConfig().messages.noPermission));
+                    return;
+                }
+                String result = HyperRewards.get().getConfigManager().applyTemplate(a2.toLowerCase());
+                ctx.sendMessage(ColorUtil.color("&a" + result));
+                return;
+            }
 
             if (a1.equalsIgnoreCase("check")) {
                 if (!ctx.sender().hasPermission("playtime.check.others")) {

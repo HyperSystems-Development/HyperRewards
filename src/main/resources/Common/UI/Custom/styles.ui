@@ -1,0 +1,132 @@
+// HyperRewards Shared Styles
+// Centralized style definitions for consistent UI appearance
+// Brand colors: Cyan/Teal (#00FFFF / #00AAAA)
+
+$C = "Common.ui";
+
+// =============================================================================
+// COLORS (reference only - use hex directly in templates)
+// =============================================================================
+// Primary accent: #00FFFF (cyan)
+// Secondary accent: #00AAAA (teal/dark cyan)
+// Panel background: #1a2a3a
+// Deep background: #0d1520
+// Status green: #44cc44
+// Status gold: #FFD700
+// Status red: #cc4444
+// Text primary: #FFFFFF
+// Text secondary: #AAAAAA
+// Text muted: #888888
+
+// =============================================================================
+// LABEL STYLES
+// =============================================================================
+
+@CyanLabelStyle = LabelStyle(
+  FontSize: 13,
+  TextColor: #00FFFF,
+  RenderBold: true,
+  HorizontalAlignment: Center,
+  VerticalAlignment: Center
+);
+
+@GreenLabelStyle = LabelStyle(
+  FontSize: 13,
+  TextColor: #44cc44,
+  RenderBold: true,
+  HorizontalAlignment: Center,
+  VerticalAlignment: Center
+);
+
+@RedLabelStyle = LabelStyle(
+  FontSize: 13,
+  TextColor: #cc4444,
+  RenderBold: true,
+  HorizontalAlignment: Center,
+  VerticalAlignment: Center
+);
+
+@GoldLabelStyle = LabelStyle(
+  FontSize: 13,
+  TextColor: #FFD700,
+  RenderBold: true,
+  HorizontalAlignment: Center,
+  VerticalAlignment: Center
+);
+
+@ButtonLabelStyle = LabelStyle(
+  FontSize: 13,
+  TextColor: #bfcdd5,
+  RenderBold: true,
+  HorizontalAlignment: Center,
+  VerticalAlignment: Center
+);
+
+@DisabledLabelStyle = LabelStyle(
+  FontSize: 13,
+  TextColor: #555555,
+  RenderBold: true,
+  HorizontalAlignment: Center,
+  VerticalAlignment: Center
+);
+
+// =============================================================================
+// BUTTON STYLES
+// =============================================================================
+
+@CyanButtonStyle = TextButtonStyle(
+  Default: (Background: $C.@DefaultSquareButtonDefaultBackground, LabelStyle: @CyanLabelStyle),
+  Hovered: (Background: $C.@DefaultSquareButtonHoveredBackground, LabelStyle: @CyanLabelStyle),
+  Pressed: (Background: $C.@DefaultSquareButtonPressedBackground, LabelStyle: @CyanLabelStyle),
+  Disabled: (Background: $C.@DefaultSquareButtonDisabledBackground, LabelStyle: @CyanLabelStyle),
+  Sounds: $C.@ButtonSounds,
+);
+
+@GreenButtonStyle = TextButtonStyle(
+  Default: (Background: $C.@DefaultSquareButtonDefaultBackground, LabelStyle: @GreenLabelStyle),
+  Hovered: (Background: $C.@DefaultSquareButtonHoveredBackground, LabelStyle: @GreenLabelStyle),
+  Pressed: (Background: $C.@DefaultSquareButtonPressedBackground, LabelStyle: @GreenLabelStyle),
+  Disabled: (Background: $C.@DefaultSquareButtonDisabledBackground, LabelStyle: @GreenLabelStyle),
+  Sounds: $C.@ButtonSounds,
+);
+
+@RedButtonStyle = TextButtonStyle(
+  Default: (Background: $C.@DefaultSquareButtonDefaultBackground, LabelStyle: @RedLabelStyle),
+  Hovered: (Background: $C.@DefaultSquareButtonHoveredBackground, LabelStyle: @RedLabelStyle),
+  Pressed: (Background: $C.@DefaultSquareButtonPressedBackground, LabelStyle: @RedLabelStyle),
+  Disabled: (Background: $C.@DefaultSquareButtonDisabledBackground, LabelStyle: @RedLabelStyle),
+  Sounds: $C.@ButtonSounds,
+);
+
+@GoldButtonStyle = TextButtonStyle(
+  Default: (Background: $C.@DefaultSquareButtonDefaultBackground, LabelStyle: @GoldLabelStyle),
+  Hovered: (Background: $C.@DefaultSquareButtonHoveredBackground, LabelStyle: @GoldLabelStyle),
+  Pressed: (Background: $C.@DefaultSquareButtonPressedBackground, LabelStyle: @GoldLabelStyle),
+  Disabled: (Background: $C.@DefaultSquareButtonDisabledBackground, LabelStyle: @GoldLabelStyle),
+  Sounds: $C.@ButtonSounds,
+);
+
+@DisabledButtonStyle = TextButtonStyle(
+  Default: (Background: $C.@DefaultSquareButtonDisabledBackground, LabelStyle: @DisabledLabelStyle),
+  Hovered: (Background: $C.@DefaultSquareButtonDisabledBackground, LabelStyle: @DisabledLabelStyle),
+  Pressed: (Background: $C.@DefaultSquareButtonDisabledBackground, LabelStyle: @DisabledLabelStyle),
+  Disabled: (Background: $C.@DefaultSquareButtonDisabledBackground, LabelStyle: @DisabledLabelStyle),
+  Sounds: $C.@ButtonSounds,
+);
+
+// =============================================================================
+// TEMPLATES
+// =============================================================================
+
+// Cyan divider line
+@Divider = Group {
+  Anchor: (Height: 1, Bottom: 8);
+  Background: (Color: #00AAAA);
+};
+
+// Dark panel background for stat cards and entries
+@CardPanel = Group {
+  Background: (Color: #1a2a3a);
+  Padding: (Full: 12);
+  LayoutMode: Top;
+};

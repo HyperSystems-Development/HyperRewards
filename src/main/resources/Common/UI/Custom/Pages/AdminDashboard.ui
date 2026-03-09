@@ -1,0 +1,144 @@
+$C = "../Common.ui";
+$S = "../styles.ui";
+$C.@PageOverlay {
+  $C.@Container {
+    Anchor: (Width: 480, Height: 480);
+
+    #Title {
+      Group {
+        $C.@Title #TitleText {
+          @Text = "ADMIN PANEL";
+        }
+      }
+    }
+
+    #Content {
+      LayoutMode: Top;
+      Padding: (Left: 20, Right: 20, Top: 10, Bottom: 15);
+
+      // Section: Rewards
+      Label {
+        Text: "Rewards";
+        Style: (FontSize: 14, TextColor: #888888, RenderBold: true);
+        Anchor: (Height: 22, Bottom: 5);
+      }
+
+      Group {
+        LayoutMode: Left;
+        Anchor: (Height: 36, Bottom: 5);
+
+        Group {
+          Anchor: (Width: 200);
+          Padding: (Right: 8);
+          $C.@SecondaryTextButton #BtnRewards {
+            @Text = "Manage Rewards";
+            Anchor: (Full: 0);
+          }
+        }
+        Label #RewardsCount {
+          Text: "0 configured";
+          Style: (FontSize: 12, TextColor: #AAAAAA, VerticalAlignment: Center);
+          FlexWeight: 1;
+        }
+      }
+
+      // Separator
+      Group {
+        Anchor: (Height: 1, Bottom: 12);
+        Background: (Color: #444444);
+      }
+
+      // Section: Milestones
+      Label {
+        Text: "Milestones";
+        Style: (FontSize: 14, TextColor: #888888, RenderBold: true);
+        Anchor: (Height: 22, Bottom: 5);
+      }
+
+      Group {
+        LayoutMode: Left;
+        Anchor: (Height: 36, Bottom: 5);
+
+        Group {
+          Anchor: (Width: 200);
+          Padding: (Right: 8);
+          $C.@SecondaryTextButton #BtnMilestones {
+            @Text = "Manage Milestones";
+            Anchor: (Full: 0);
+          }
+        }
+        Label #MilestonesCount {
+          Text: "0 configured";
+          Style: (FontSize: 12, TextColor: #AAAAAA, VerticalAlignment: Center);
+          FlexWeight: 1;
+        }
+      }
+
+      // Separator
+      Group {
+        Anchor: (Height: 1, Bottom: 12);
+        Background: (Color: #444444);
+      }
+
+      // Section: Settings
+      Label {
+        Text: "Settings";
+        Style: (FontSize: 14, TextColor: #888888, RenderBold: true);
+        Anchor: (Height: 22, Bottom: 5);
+      }
+
+      Group {
+        Anchor: (Height: 36, Bottom: 5);
+        LayoutMode: Left;
+
+        Group {
+          Anchor: (Width: 200);
+          Padding: (Right: 8);
+          $C.@SecondaryTextButton #BtnSettings {
+            @Text = "General Settings";
+            Anchor: (Full: 0);
+          }
+        }
+      }
+
+      // Separator
+      Group {
+        Anchor: (Height: 1, Bottom: 12);
+        Background: (Color: #444444);
+      }
+
+      // Section: Quick Actions
+      Label {
+        Text: "Quick Actions";
+        Style: (FontSize: 14, TextColor: #888888, RenderBold: true);
+        Anchor: (Height: 22, Bottom: 5);
+      }
+
+      Group {
+        Anchor: (Height: 36, Bottom: 5);
+        LayoutMode: Left;
+
+        Group {
+          Anchor: (Width: 200);
+          $C.@SecondaryTextButton #BtnReload {
+            @Text = "Reload Config";
+            Anchor: (Full: 0);
+          }
+        }
+      }
+
+      // Spacer
+      Group { FlexWeight: 1; }
+
+      // Back
+      Group {
+        Anchor: (Height: 38);
+        $C.@SecondaryTextButton #BtnBack {
+          @Text = "< BACK";
+          Anchor: (Full: 0);
+        }
+      }
+    }
+  }
+}
+$C.@BackButton {}

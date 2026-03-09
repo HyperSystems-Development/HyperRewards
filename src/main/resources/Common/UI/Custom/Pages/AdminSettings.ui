@@ -1,0 +1,122 @@
+$C = "../Common.ui";
+$S = "../styles.ui";
+$C.@PageOverlay {
+  $C.@Container {
+    Anchor: (Width: 500, Height: 440);
+
+    #Title {
+      Group {
+        $C.@Title #TitleText {
+          @Text = "SETTINGS";
+        }
+      }
+    }
+
+    #Content {
+      LayoutMode: Top;
+      Padding: (Left: 20, Right: 20, Top: 10, Bottom: 10);
+
+      // Section: Rest Reminder
+      Label {
+        Text: "Rest Reminder";
+        Style: (FontSize: 14, TextColor: #888888, RenderBold: true);
+        Anchor: (Height: 22, Bottom: 5);
+      }
+
+      // Enabled checkbox
+      Group {
+        Anchor: (Height: 30, Bottom: 6);
+        $C.@CheckBoxWithLabel #RestEnabledCheck {
+          @Text = "Enabled";
+          Anchor: (Full: 0);
+        }
+      }
+
+      // Interval input
+      Group {
+        Anchor: (Height: 50, Bottom: 6);
+        LayoutMode: Top;
+
+        Label {
+          Text: "INTERVAL (MINUTES)";
+          Style: (FontSize: 11, TextColor: #888888);
+          Anchor: (Height: 16);
+        }
+        $C.@TextField #RestIntervalInput {
+          Anchor: (Height: 30, Left: 0, Right: 0);
+        }
+      }
+
+      // Message input
+      Group {
+        Anchor: (Height: 50, Bottom: 8);
+        LayoutMode: Top;
+
+        Label {
+          Text: "REMINDER MESSAGE";
+          Style: (FontSize: 11, TextColor: #888888);
+          Anchor: (Height: 16);
+        }
+        $C.@TextField #RestMessageInput {
+          Anchor: (Height: 30, Left: 0, Right: 0);
+        }
+      }
+
+      // Separator
+      Group {
+        Anchor: (Height: 1, Bottom: 12);
+        Background: (Color: #444444);
+      }
+
+      // Section: Integrations
+      Label {
+        Text: "Integrations";
+        Style: (FontSize: 14, TextColor: #888888, RenderBold: true);
+        Anchor: (Height: 22, Bottom: 5);
+      }
+
+      // HyperPerms status (auto-detected)
+      Group {
+        Anchor: (Height: 24, Bottom: 8);
+        LayoutMode: Left;
+
+        Label {
+          Text: "HyperPerms: ";
+          Style: (FontSize: 12, TextColor: #AAAAAA);
+          Anchor: (Width: 100, Height: 24);
+        }
+        Label #HyperPermsStatus {
+          Text: "Checking...";
+          Style: (FontSize: 12, TextColor: #55FF55);
+          Anchor: (Height: 24);
+        }
+      }
+
+      // Spacer
+      Group { FlexWeight: 1; }
+
+      // Button row
+      Group {
+        Anchor: (Height: 38);
+        LayoutMode: Left;
+
+        Group {
+          FlexWeight: 1;
+          Padding: (Right: 4);
+          $C.@SecondaryTextButton #BtnSave {
+            @Text = "SAVE";
+            Anchor: (Full: 0);
+          }
+        }
+        Group {
+          FlexWeight: 1;
+          $C.@SecondaryTextButton #BtnCancel {
+            @Text = "CANCEL";
+            Anchor: (Full: 0);
+          }
+        }
+      }
+    }
+  }
+}
+$C.@BackButton {}
